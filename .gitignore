@@ -1,0 +1,8 @@
+/node_modules
+.env
+/dist
+/src/img
+/src/postImage
+
+# Ignorar copias con nombres raros del package-lock
+package-lock-*.json

@@ -1,0 +1,38 @@
+
+services:
+  # Servicio de base de datos MySQL
+  database:
+    image: mysql:8.4
+    container_name: mysql_version_01
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 2511
+      MYSQL_DATABASE: help_me_dev
+    ports:
+      - "3334:3306"
+    volumes:
+      - help_me_mysql:/var/lib/mysql
+
+# Servicio de backend Node.js / TypeScript
+  backend:
+    build:
+      context: .
+    container_name: help_backend
+    ports:
+      - "2025:2025"
+    depends_on:
+      - database
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - FORCE_COLOR=1
+      - NODE_DISABLE_COLORS=0
+      - NODE_OPTIONS=--no-warnings --trace-warnings --enable-source-maps --trace-deprecation --trace-uncaught --trace-exit --unhandled-rejections=strict --trace-event-categories node.async_hooks --trace-event-file-pattern=./trace*.log
+    command: ["npm", "run", "dev"] 
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  help_me_mysql:
