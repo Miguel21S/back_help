@@ -329,35 +329,40 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
     }
 }
 
-const dashboardBuildig = async (req: Request, res: Response, next: NextFunction) =>{
+const dashboardBuildig = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {roleId, roleName } = req.tokenData;
+        const { roleId, roleName } = req.tokenData;
 
-        if(!roleId && roleName !== "superAdmin"){throw new authorizationError("Unauthorized access")}
+        if (roleName !== "superAdmin") { throw new authorizationError("Unauthorized access") }
 
-        const totalBuilding = await Buildings.count()
+        const [
+            totalBuilding,
+            totalBuildingByCountry,
+            totalBuildingsByCountryAndProvince
+        ] = await Promise.all([
+            Buildings.count(),
+            Buildings.createQueryBuilder("building")
+                .select("building.country", "country")
+                .addSelect("COUNT(building.id)", "count")
+                .groupBy("country")
+                .getRawMany(),
+            Buildings.createQueryBuilder("building")
+                .select("building.country", "country")
+                .addSelect("building.province", "province")
+                .addSelect("building.city", "city")
+                .addSelect("building.quantity_apartment", "quantity_apartment")
+                .addSelect("COUNT(building.id)", "count")
+                .groupBy("country")
+                .addGroupBy("province")
+                .addGroupBy("city")
+                .addGroupBy("quantity_apartment")
+                .getRawMany()
+
+        ])
         console.log("Total building: ", totalBuilding)
-
-        const totalBuildingByCountry = await Buildings.createQueryBuilder("building")
-            .select("building.country", "country")
-            .addSelect("COUNT(building.id)", "count")
-            .groupBy("country")
-            .getRawMany()
         console.log("Total building by country: ", totalBuildingByCountry)
-
-        const totalBuildingsByCountryAndProvince = await Buildings.createQueryBuilder("building")
-            .select("building.country", "country")
-            .addSelect("building.province", "province")
-            .addSelect("building.city", "city")
-            .addSelect("building.quantity_apartment", "quantity_apartment")
-            .addSelect("COUNT(building.id)", "count")
-            .groupBy("country")
-            .addGroupBy("province")
-            .addGroupBy("city")
-            .addGroupBy("quantity_apartment")
-            .getRawMany()
         console.log("totalBuildingsByCountryAndProvince: ", totalBuildingsByCountryAndProvince)
-        
+
         res.status(200).json({
             success: true,
             mensage: "Buildings",
@@ -369,9 +374,9 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
         })
     } catch (error) {
         next(error);
-        
+
     }
-} 
+}
 
 /////////////////////   EXPORTING ALL THE METHODS
 export {
