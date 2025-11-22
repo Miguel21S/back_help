@@ -244,7 +244,7 @@ const deleteBuildingById = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
-/////////////////////   METHODS FOR FILTERING BUILDING ELEMENTS
+/////////////////////   METHODS FOR FILTERING BUILDING ELEMENTS BY ID
 const getfilterElementInBuilding = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { roleId, roleName } = req.tokenData;

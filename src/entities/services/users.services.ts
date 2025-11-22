@@ -4,6 +4,7 @@ import { Users } from "../models/Users.models";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
 import { Not } from "typeorm";
 import { createUsersPDF } from "../../reports/genereteUsersPDF";
+import { Buildings } from "../models/Buildings.models";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
@@ -58,13 +59,15 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { roleId, roleName } = req.tokenData;
-        const { name, lastName, email, phone, date_born, gender, nationality, building_id, special_situation, date_entry_apartment } = req.body;
         const user_id = req.params.id;
-
-        const user = await Users.findOne({ where: { id: parseInt(user_id) } });
+        const {
+            name, lastName, email, phone, date_born, gender, nationality,
+            building_id, special_situation, date_entry_apartment
+        } = req.body;
 
         if (isNaN(parseInt(user_id))) { throw new badRequestError("Invalid user ID") }
 
+        const user = await Users.findOne({ where: { id: parseInt(user_id) } });
         if (!user) { throw new notFoundError('User not found') }
 
         if (user.id !== roleId && roleName !== 'superAdmin') { throw new authorizationError("Unauthorized access") }
@@ -82,21 +85,53 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
             }
         }
 
-        Users.update(user_id,
-            {
-                id: parseInt(user_id),
-                name,
-                lastName,
-                date_born,
-                gender,
-                nationality,
-                building_id,
-                special_situation,
-                phone,
-                email,
-                date_entry_apartment,
+        let fieldsToUpdate: any = {
+            name,
+            lastName,
+            email,
+            phone,
+            date_born,
+            gender,
+            nationality,
+            building_id,
+            special_situation,
+            date_entry_apartment
+        };
+
+        Object.keys(fieldsToUpdate).forEach(key => {
+            if (fieldsToUpdate[key] === undefined) {
+                delete fieldsToUpdate[key];
             }
-        )
+        });
+
+        if (fieldsToUpdate.building_id) {
+            const buildingExists = await Buildings.findOne({ where: { id: fieldsToUpdate.building_id } });
+            if (!buildingExists) throw new notFoundError("Building id not found");
+        }
+
+
+        const upd = await Users.createQueryBuilder()
+            .update(Users)
+            .set(fieldsToUpdate)
+            .where("id = :id", { id: user_id })
+            .execute()
+        console.log("Upd: ", upd)
+
+        // Users.update(user_id,
+        //     {
+        //         id: parseInt(user_id),
+        //         name,
+        //         lastName,
+        //         date_born,
+        //         gender,
+        //         nationality,
+        //         building_id,
+        //         special_situation,
+        //         phone,
+        //         email,
+        //         date_entry_apartment,
+        //     }
+        // )
 
         res.status(200).json({
             success: true,
@@ -322,7 +357,7 @@ const totalUsers = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-//////////////////       GENERETE DPF BY FILTER
+//////////////////       GENERETE PDF BY FILTER
 const filterUsersInSystem = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { roleName } = req.tokenData
@@ -338,13 +373,13 @@ const filterUsersInSystem = async (req: Request, res: Response, next: NextFuncti
             findUsersGeneretePDF.andWhere("users.nationality = :nationality", { nationality })
         }
 
-        if(birthDate){
+        if (birthDate) {
             const start = new Date(birthDate);
             const end = new Date(birthDate);
             start.setHours(0, 0, 0, 0)
             end.setHours(23, 59, 59, 999)
 
-            findUsersGeneretePDF.andWhere("users.date_born BETWEEN :start AND :end", {start, end})
+            findUsersGeneretePDF.andWhere("users.date_born BETWEEN :start AND :end", { start, end })
         }
 
         if (startBirthDate && endBirthDate) {
@@ -367,8 +402,8 @@ const filterUsersInSystem = async (req: Request, res: Response, next: NextFuncti
             );
         }
 
-        if(gender){
-            findUsersGeneretePDF.andWhere("users.gender = :gender", {gender})
+        if (gender) {
+            findUsersGeneretePDF.andWhere("users.gender = :gender", { gender })
         }
 
         const user = await findUsersGeneretePDF.getMany();
