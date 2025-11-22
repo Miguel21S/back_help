@@ -344,13 +344,27 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
             .groupBy("country")
             .getRawMany()
         console.log("Total building by country: ", totalBuildingByCountry)
+
+        const totalBuildingsByCountryAndProvince = await Buildings.createQueryBuilder("building")
+            .select("building.country", "country")
+            .addSelect("building.province", "province")
+            .addSelect("building.city", "city")
+            .addSelect("building.quantity_apartment", "quantity_apartment")
+            .addSelect("COUNT(building.id)", "count")
+            .groupBy("country")
+            .addGroupBy("province")
+            .addGroupBy("city")
+            .addGroupBy("quantity_apartment")
+            .getRawMany()
+        console.log("totalBuildingsByCountryAndProvince: ", totalBuildingsByCountryAndProvince)
         
         res.status(200).json({
             success: true,
             mensage: "Buildings",
             data: {
                 totalBuilding,
-                totalBuildingByCountry
+                totalBuildingByCountry,
+                totalBuildingsByCountryAndProvince
             }
         })
     } catch (error) {
