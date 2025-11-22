@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
+import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
 import { Buildings } from "../models/Buildings.models";
 import { Not } from "typeorm";
 import { Users } from "../models/Users.models";
@@ -329,8 +329,38 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
     }
 }
 
+const dashboardBuildig = async (req: Request, res: Response, next: NextFunction) =>{
+    try {
+        const {roleId, roleName } = req.tokenData;
+
+        if(!roleId && roleName !== "superAdmin"){throw new authorizationError("Unauthorized access")}
+
+        const totalBuilding = await Buildings.count()
+        console.log("Total building: ", totalBuilding)
+
+        const totalBuildingByCountry = await Buildings.createQueryBuilder("building")
+            .select("building.country", "country")
+            .addSelect("COUNT(building.id)", "count")
+            .groupBy("country")
+            .getRawMany()
+        console.log("Total building by country: ", totalBuildingByCountry)
+        
+        res.status(200).json({
+            success: true,
+            mensage: "Buildings",
+            data: {
+                totalBuilding,
+                totalBuildingByCountry
+            }
+        })
+    } catch (error) {
+        next(error);
+        
+    }
+} 
+
 /////////////////////   EXPORTING ALL THE METHODS
 export {
-    createBuilding, getAllBuildings, getBuildingById,
-    updateBuildingById, deleteBuildingById, getfilterElementInBuilding
+    createBuilding, getAllBuildings, getBuildingById, updateBuildingById,
+    deleteBuildingById, getfilterElementInBuilding, dashboardBuildig
 };
