@@ -269,7 +269,7 @@ const CheckEmailUser = async (req: Request, res: Response, next: NextFunction) =
 }
 
 ///////////////////      GET THE TOTAL NUMBER OF USERS IN THE SYSTEM
-const totalUsers = async (req: Request, res: Response, next: NextFunction) => {
+const dashboardUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roleName = req.tokenData.roleName;
 
@@ -358,7 +358,7 @@ const totalUsers = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 //////////////////       GENERETE PDF BY FILTER
-const filterUsersInSystem = async (req: Request, res: Response, next: NextFunction) => {
+const generetePdfByFilterUsersInSystem = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { roleName } = req.tokenData
         let { nationality, birthDate, startBirthDate, endBirthDate, date_entry_apartment,
@@ -408,6 +408,7 @@ const filterUsersInSystem = async (req: Request, res: Response, next: NextFuncti
 
         const user = await findUsersGeneretePDF.getMany();
 
+        //// GENERETE PDF FROM SYSTEM USER LIST
         if (findUsersGeneretePDF) {
             const pdfDoc = createUsersPDF(user);
 
@@ -499,5 +500,6 @@ const getMyAllImage = async (req: Request, res: Response, next: NextFunction) =>
 }
 export {
     getUsers, getPrifile, getUserById, deleteUser, updateUsers,
-    compareEmail, CheckEmailUser, totalUsers, getMyAllImage, filterUsersInSystem
+    compareEmail, CheckEmailUser, dashboardUsers, getMyAllImage,
+    generetePdfByFilterUsersInSystem
 };
