@@ -4,9 +4,17 @@ import { Buildings } from "../models/Buildings.models";
 import { createQueryBuilder, Not } from "typeorm";
 import { Users } from "../models/Users.models";
 import { createBuildingPDF } from "../../reports/genereteBuildingsPDF";
+import { AppDataSource } from "../../core/database/db";
 
 const createBuilding = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        const { roleName } = req.tokenData;
+
+        if (
+            roleName !== "superAdmin" && roleName !== "admin" &&
+            roleName !== "AdminLocal" /* && roleName !== "moderator" */
+        ) throw new authorizationError("Unauthorized access")
+
         if (!req.body || Object.keys(req.body).length === 0) {
             throw new badRequestError("El body está vacío");
         }
@@ -171,8 +179,14 @@ const getBuildingById = async (req: Request, res: Response, next: NextFunction) 
 /////////////////////   METHOD THAT UPDATE THE BUILDING BY ID
 const updateBuildingById = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { roleName } = req.tokenData
         const building_id = req.params.id;
         const { address, number_build, country, province, city, postal_code, quantity_apartment, floor_number, build_type } = req.body;
+
+        if (
+            roleName !== "superAdmin" && roleName !== "admin" &&
+            roleName !== "AdminLocal" /* && roleName !== "moderator" */
+        ) throw new authorizationError("Unauthorized access")
 
         if (isNaN(Number(building_id)) || Number(building_id) !== parseInt(building_id)) { throw new badRequestError("Invalid building ID") }
 
@@ -225,7 +239,13 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
 /////////////////////   METHOD THAT DELETE THE BUILDING BY ID
 const deleteBuildingById = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { roleName } = req.tokenData
         const building_id = req.params.id;
+
+        if (
+            roleName !== "superAdmin" && roleName !== "admin" &&
+            roleName !== "AdminLocal"/*  && roleName !== "moderator" */
+        ) throw new authorizationError("Unauthorized access")
 
         if (isNaN(Number(building_id)) || Number(building_id) !== parseInt(building_id)) { throw new badRequestError("Invalid building ID") }
 
@@ -247,8 +267,13 @@ const deleteBuildingById = async (req: Request, res: Response, next: NextFunctio
 /////////////////////   METHODS FOR FILTERING BUILDING ELEMENTS BY ID
 const getfilterElementInBuilding = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleId, roleName } = req.tokenData;
+        const { roleName } = req.tokenData;
         const building_id = Number(req.params.id);
+
+        if (
+            roleName !== "superAdmin" && roleName !== "admin" &&
+            roleName !== "AdminLocal" /* && roleName !== "moderator" */
+        ) throw new authorizationError("Unauthorized access")
 
         if (isNaN(building_id)) { throw new badRequestError("Invalid building ID") }
 
@@ -260,7 +285,9 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
         const totalUsers = await Users.count({ where: { building: { id: building.id } } });
         console.log("Total users in building:", totalUsers);
 
-        const userCount = await Users.createQueryBuilder("users")
+        const userRepository = AppDataSource.getRepository(Users);
+        const userCount = await userRepository
+            .createQueryBuilder("users")
             .leftJoinAndSelect("users.building", "building")
             .leftJoinAndSelect("users.role", "role")
             .where("building.id = :id", { id: building_id })
@@ -389,17 +416,17 @@ const generetePdfByFilterBuildInSystem = async (req: Request, res: Response, nex
         const findBuildingGeneretePDF = Buildings.createQueryBuilder("builds")
         if (!findBuildingGeneretePDF) throw new notFoundError("Not found Building")
 
-        if(country){
-            findBuildingGeneretePDF.andWhere("builds.country = :country", {country})
+        if (country) {
+            findBuildingGeneretePDF.andWhere("builds.country = :country", { country })
         }
 
-        if(country && province){
-            findBuildingGeneretePDF.andWhere("builds.country = :country AND builds.province = :province", {country, province})
+        if (country && province) {
+            findBuildingGeneretePDF.andWhere("builds.country = :country AND builds.province = :province", { country, province })
         }
 
         const build = await findBuildingGeneretePDF.getMany()
         //// GENERETE PDF FROM SYSTEM BUILDING LIST
-        if(findBuildingGeneretePDF){
+        if (findBuildingGeneretePDF) {
             const pdfDoc = createBuildingPDF(build)
 
             res.setHeader("Content-Type", "application/pdf")

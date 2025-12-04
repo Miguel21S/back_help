@@ -41,11 +41,11 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
         let genderFormatted;
         if(gender === 'Hombre' || gender === 'Man' || gender === 'Male' || gender === 'Masculino'){
-            genderFormatted = 'HOMBRE';
+            genderFormatted = 'MALE';
         }
 
         if(gender === 'Mujer' || gender === 'Masculina' || gender === 'Women' || gender === 'Female'){
-            genderFormatted = 'MUJER';
+            genderFormatted = 'FEMALE';
         }
 
         await Users.create(

@@ -4,7 +4,9 @@ export const seederRoles = async () => {
     const roles = [
         "superAdmin",
         "admin",
+        "AdminLocal",
         "moderator",
+        "ModeradorUser",
         "user"
     ];
     for (const name of roles) {
