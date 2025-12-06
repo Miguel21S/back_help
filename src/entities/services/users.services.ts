@@ -321,13 +321,19 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
         console.log("Users for age group formatted:", usersForAgeGroup);
 
         const usersForAgeAndGenderGroup = await Users.createQueryBuilder("users")
+            // .select(AGE_CASE, "group_age")
+            // .addSelect("users.gender", "gender")
+            // .addSelect("COUNT(users.id)", "count")
+            // .where("users.date_born IS NOT NULL")
+            // .groupBy("users.gender")
+            // .addGroupBy("group_age")
+            // .orderBy("group_age")
+            // .getRawMany();
+
             .select(AGE_CASE, "group_age")
             .addSelect("users.gender", "gender")
             .addSelect("COUNT(users.id)", "count")
-            .where("users.date_born IS NOT NULL")
-            .groupBy("group_age")
-            .addGroupBy("users.gender")
-            .orderBy("group_age")
+            .groupBy("group_age, users.gender WITH ROLLUP")
             .getRawMany();
         console.log("Users for age group formatted:", usersForAgeAndGenderGroup);
 
