@@ -16,5 +16,6 @@ router.get('/auth/dashboard/users', auth, user.dashboardUsers);
 router.get('/auth/profile', auth, user.getPrifile);
 router.get('/auth/getmyimage', auth, user.getMyAllImage)
 router.put('/auth/chagepassword/:id', auth, user.changePassword)
+router.put('/auth/updaterole', auth, isAdmin, user.changeRole)
 
 export default router;

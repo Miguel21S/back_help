@@ -59,7 +59,7 @@ export const seederUsers = async () => {
             last_login: faker.date.past(),
 
             date_entry_apartment: faker.date.past(),
-            password: await bcryptjs.hash("User123456", 10),
+            password: await bcryptjs.hash("User.123456", 10),
 
             building_id: faker.number.int({ min: 1, max: 10 }),
             role_id: 6

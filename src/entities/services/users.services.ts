@@ -7,6 +7,7 @@ import { createUsersPDF } from "../../reports/genereteUserPDF/genereteUsersPDF";
 import { Buildings } from "../models/Buildings.models";
 import bcrypt from 'bcryptjs'
 import { AppDataSource } from "../../core/database/db";
+import { Roles } from "../models/Roles.models";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
@@ -14,7 +15,7 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roleName = req.tokenData.roleName;
 
-        if (roleName !== "superAdmin") { throw new authorizationError("Unauthorized access") }
+        if ( roleName !== "superAdmin" && roleName !== "admin") { throw new authorizationError("Unauthorized access") }
 
         const users = await Users.find({
             select: {
@@ -50,7 +51,6 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
             pdfDoc.end();
             return;
         }
-        console.log(users);
 
         res.status(200).json({
             success: true,
@@ -121,13 +121,11 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
             if (!buildingExists) throw new notFoundError("Building id not found");
         }
 
-
         const upd = await Users.createQueryBuilder()
             .update(Users)
             .set(fieldsToUpdate)
             .where("id = :id", { id: user_id })
             .execute()
-        console.log("Upd: ", upd)
 
         // Users.update(user_id,
         //     {
@@ -335,11 +333,11 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
         console.log("Users for age group formatted:", usersForAgeGroup);
 
         const userIsActive = await AppDataSource.getRepository(Users)
-        .createQueryBuilder("user")
-        .select("user.isActive", "isActive")
-        .addSelect("COUNT(user.id)", "count")
-        .groupBy("isActive")
-        .getRawMany()
+            .createQueryBuilder("user")
+            .select("user.isActive", "isActive")
+            .addSelect("COUNT(user.id)", "count")
+            .groupBy("isActive")
+            .getRawMany()
         console.log("ACTIVE:", userIsActive)
 
         const usersForAgeAndGenderGroup = await Users.createQueryBuilder("users")
@@ -461,11 +459,9 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
         const id = req.params.id;
 
         const user = await Users.findOne({ where: { id: parseInt(id) } })
-        if (!user?.id) {
-            throw new notFoundError("User not found")
-        }
+        if (!user?.id) { throw new notFoundError("User not found") }
 
-        if (roleId != user?.id || roleName != "superAdmin") { throw new authorizationError('Unauthorized access') }
+        if (roleId !== user?.id && roleName !== "superAdmin" && roleName !== "admin") { throw new authorizationError('Unauthorized access') }
 
         if (password !== newPassword) { throw new badRequestError("Passwords do not match") }
 
@@ -493,8 +489,41 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
         next(error)
     }
 }
+
+////////////////////     CHANGE TO ROLE
+const changeRole = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { roleName } = req.tokenData
+        const { email, nameRole } = req.body
+
+        if (roleName !== 'superAdmin' && roleName !== 'admin' ) { throw new authorizationError('Unauthorized access') }
+
+        const user = await Users.findOne({ where: { email: email } })
+        if (!user) { throw new notFoundError('User not found') }
+
+        const role = await Roles.findOne({ where: { name: nameRole } });
+        if (!role) throw new notFoundError('Role not found');
+      
+        const updateRole = await Users.update(
+            {email},
+            {
+                email: email,
+                role_id: role?.id
+            }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+            data: updateRole
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 export {
     getUsers, getPrifile, getUserById, deleteUser, updateUsers,
     compareEmail, CheckEmailUser, dashboardUsers, getMyAllImage,
-    changePassword
+    changePassword, changeRole
 };
