@@ -7,11 +7,17 @@ export class Buildings extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column({ "name": "address" })
-    address!: string;
+    // @Column({ "name": "address" })
+    // address_line1!: string;
+    // @Column({ "name": "number_build" })
+    // number_build!: string;
 
-    @Column({ "name": "number_build" })
-    number_build!: string;
+    @Column({ "name": "address_line1" })
+    address_line1!: string;
+
+    @Column({ "name": "address_line2" })
+    address_line2!: string;
+
 
     @Column({ "name": "country" })
     country!: string;
@@ -27,6 +33,21 @@ export class Buildings extends BaseEntity{
 
     @Column({ "name": "build_type" })
     build_type!: string;
+
+    @Column({ "name": "last_maintenance" })
+    last_maintenance!: string;
+
+    // @Column({ "name": "admin_responsible" })
+    // admin_responsible!: string;
+    
+    @Column({ "name": "general_status" })
+    general_status!: string;
+    
+    @Column({ "name": "services_available" })
+    services_available!: string;
+    
+    // @Column({ "name": "photo" })
+    // photo!: string;
 
     @Column({ "name": "quantity_apartment" })
     quantity_apartment!: number;

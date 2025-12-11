@@ -15,13 +15,16 @@ export const createBuildingPDF = (buildings: any[]) => {
     const tableBody = [
         [
             { text: "ID", bold: true },
-            { text: "ADDRESS", bold: true },
-            { text: "NUMBER BUILD", bold: true },
+            { text: "ADDRESS 1", bold: true },
+            { text: "ADDRESS 2", bold: true },
             { text: "COUNTRY", bold: true },
             { text: "PROVINCE", bold: true },
             { text: "CITY", bold: true },
             { text: "POSTAL CODE", bold: true },
             { text: "BUILD TYPE", bold: true },
+            { text: "LAST MAINTENANCE", bold: true },
+            { text: "SERVICES AVAILABLE", bold: true },
+            { text: "GENERAL STATUS", bold: true },
             { text: "QUANTITY APARTMENT", bold: true },
             { text: "FLOOR NUMBER", bold: true },
         ]
@@ -30,20 +33,23 @@ export const createBuildingPDF = (buildings: any[]) => {
     buildings.forEach(b => {
         tableBody.push([
             b.id,
-            b.address,
-            b.number_build,
+            b.address_line1,
+            b.address_line2,
             b.country,
             b.province,
             b.city,
             b.postal_code,
             b.build_type,
+            b.last_maintenance ? new Date(b.last_maintenance).toLocaleString() : "",
+            b.services_available,
+            b.general_status,
             b.quantity_apartment,
             b.floor_number,
         ])
     });
 
     const docDefinition = {
-        pageSize: 'A4',
+        pageSize: 'A3',
         pageOrientation: 'landscape',
         pageMargins: [40, 60, 40, 60],
 
@@ -68,7 +74,7 @@ export const createBuildingPDF = (buildings: any[]) => {
             {
                 table:{
                     headerRows:1,
-                    widths: ["auto", "auto", "auto", "auto", "auto", "auto", "*", "*", "auto", "auto"],
+                    widths: ["auto", "auto", "auto", "auto", "auto", "auto", "*", "*", "auto", "auto", "auto", "auto", "auto"],
                     body: tableBody,
                 }
             }

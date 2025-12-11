@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
 import { Buildings } from "../models/Buildings.models";
-import { createQueryBuilder, Not } from "typeorm";
+import { Not } from "typeorm";
 import { Users } from "../models/Users.models";
-import { createBuildingPDF } from "../../reports/genereteBuildingsPDF";
 import { AppDataSource } from "../../core/database/db";
 
 const createBuilding = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -18,8 +17,12 @@ const createBuilding = async (req: Request, res: Response, next: NextFunction): 
         if (!req.body || Object.keys(req.body).length === 0) {
             throw new badRequestError("El body está vacío");
         }
+        const colp = ["address_line2", "last_maintenance", "services_available"];
+        const requiredFields = [
+            "address_line1", "country", "province", "city", "postal_code",
+            "quantity_apartment", "floor_number", "build_type", "general_status"
+        ];
 
-        const requiredFields = ["address", "number_build", "country", "province", "city", "postal_code", "quantity_apartment", "floor_number", "build_type"];
         for (const field of requiredFields) {
             if (!req.body[field] || req.body[field].toString().trim() === "") {
                 throw new badRequestError(`The ${field} field is mandatory and cannot be empty.`);
@@ -34,8 +37,7 @@ const createBuilding = async (req: Request, res: Response, next: NextFunction): 
 
         const existingBuilding = await Buildings.findOne({
             where: {
-                address: req.body.address,
-                number_build: req.body.number_build,
+                address_line1: req.body.address_line1,
                 province: req.body.province,
                 city: req.body.city,
                 postal_code: req.body.postal_code,
@@ -73,29 +75,21 @@ const getAllBuildings = async (req: Request, res: Response, next: NextFunction) 
         const buildings = await Buildings.find({
             select: {
                 id: true,
-                address: true,
-                number_build: true,
+                address_line1: true,
+                address_line2: true,
                 country: true,
                 province: true,
                 city: true,
                 postal_code: true,
                 build_type: true,
+                last_maintenance: true,
+                general_status: true,
+                services_available: true,
                 quantity_apartment: true,
                 floor_number: true,
             }
         })
 
-        //// GENERETE PDF FROM SYSTEM BUILDING LIST
-        if (req.query.pdf === "true") {
-            const pdfDoc = createBuildingPDF(buildings);
-
-            res.setHeader("Content-Type", "application/pdf");
-            res.setHeader("Content-Disposition", "attachment; filename=buildingInfo.pdf");
-
-            pdfDoc.pipe(res);
-            pdfDoc.end();
-            return;
-        }
         console.log(buildings);
 
         res.status(200).json({
@@ -144,18 +138,22 @@ const getBuildingById = async (req: Request, res: Response, next: NextFunction) 
             email: u.email
         })); */
 
-        const building = await Buildings.createQueryBuilder("building")
+        const building = await AppDataSource.getRepository(Buildings)
+            .createQueryBuilder("building")
             .leftJoinAndSelect("building.users", "users")
             .where("building.id = :id", { id: building_id })
             .select([
                 "building.id",
-                "building.address",
-                "building.number_build",
+                "building.address_line1",
+                "building.address_line2",
                 "building.country",
                 "building.province",
                 "building.city",
                 "building.postal_code",
                 "building.build_type",
+                "building.last_maintenance",
+                "building.general_status",
+                "building.services_available",
                 "building.quantity_apartment",
                 "building.floor_number",
                 "users.id",
@@ -181,7 +179,10 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
     try {
         const { roleName } = req.tokenData
         const building_id = req.params.id;
-        const { address, number_build, country, province, city, postal_code, quantity_apartment, floor_number, build_type } = req.body;
+        const {
+            address_line1, address_line2, country, province, city, postal_code, quantity_apartment,
+            floor_number, build_type, last_maintenance, general_status, services_available
+        } = req.body;
 
         if (
             roleName !== "superAdmin" && roleName !== "admin" &&
@@ -194,11 +195,10 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
 
         if (!building) { throw new notFoundError("Building not found") }
 
-        if (address || number_build || postal_code || city || province) {
+        if (address_line1 || postal_code || city || province) {
             const existBuilding = await Buildings.findOne({
                 where: {
-                    address: address,
-                    number_build: number_build,
+                    address_line1: address_line1,
                     province: province,
                     city: city,
                     postal_code: postal_code,
@@ -214,15 +214,18 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
         await Buildings.update(
             { id: parseInt(building_id) },
             {
-                address,
-                number_build,
+                address_line1,
+                address_line2,
                 country,
                 province,
                 city,
                 postal_code,
+                build_type,
+                last_maintenance,
+                general_status,
+                services_available,
                 quantity_apartment,
                 floor_number,
-                build_type,
             }
         );
 
@@ -285,8 +288,10 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
         const totalUsers = await Users.count({ where: { building: { id: building.id } } });
         console.log("Total users in building:", totalUsers);
 
-        const userRepository = AppDataSource.getRepository(Users);
-        const userCount = await userRepository
+        // const userCountInfoBuild = await AppDataSource.getRepository(Users);
+        //     .createQueryBuilder("users")
+
+        const userCountInfoBuild = await AppDataSource.getRepository(Users)
             .createQueryBuilder("users")
             .leftJoinAndSelect("users.building", "building")
             .leftJoinAndSelect("users.role", "role")
@@ -294,15 +299,20 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
             .select([
                 "users.id",
                 "users.name",
+                "users.lastName",
                 "users.email",
+                "users.type_document",
+                "users.number_document",
+                "users.nationality",
                 "users.gender",
                 "users.building_id",
                 "role.name"
             ])
             .getMany()
-        console.log("User: ", userCount);
+        console.log("User: ", userCountInfoBuild);
 
-        const usersByGender = await Users.createQueryBuilder("users")
+        const usersByGender = await AppDataSource.getRepository(Users)
+            .createQueryBuilder("users")
             .leftJoin("users.building", "building")
             .select("users.gender", "gender")
             .addSelect("COUNT(users.id)", "count")
@@ -311,7 +321,8 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
             .getRawMany();
         console.log("User count", usersByGender);
 
-        const usersByrole = await Users.createQueryBuilder("users")
+        const usersByrole = await AppDataSource.getRepository(Users)
+            .createQueryBuilder("users")
             .leftJoin("users.building", "building")
             .leftJoin("users.role", "role")
             .select("role.name", "roleName")
@@ -321,7 +332,8 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
             .getRawMany();
         console.log("User count by role", usersByrole);
 
-        const totalUsersByAge = await Users.createQueryBuilder("users")
+        const totalUsersByAge = await AppDataSource.getRepository(Users)
+            .createQueryBuilder("users")
             .leftJoin("users.building", "building")
             // .select("FLOOR(DATEDIFF(CURDATE(), users.date_born) / 365.25)", "age")
             .select("TIMESTAMPDIFF(YEAR, users.date_born, CURDATE())", "age")
@@ -342,9 +354,10 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
             message: "Users count retrieved successfully",
             data: {
                 building_id,
-                building: building.address + " " + building.number_build,
+                address: building.address_line1,
+                address2: building.address_line2,
                 totalUsers,
-                userCount,
+                userCountInfoBuild,
                 usersByGender,
                 totalUsersByAge,
                 usersByrole,
@@ -365,7 +378,8 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
         const [
             totalBuilding,
             totalBuildingByCountry,
-            totalBuildingsByCountryAndProvince
+            totalBuildingsByCountryAndProvince,
+            totalUsersBuildingsByCountryAndProvinceActive
         ] = await Promise.all([
             Buildings.count(),
             Buildings.createQueryBuilder("building")
@@ -383,12 +397,26 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
                 .addGroupBy("province")
                 .addGroupBy("city")
                 .addGroupBy("quantity_apartment")
+                .getRawMany(),
+            Buildings.createQueryBuilder("building")
+                .select("building.country", "country")
+                .addSelect("building.province", "province")
+                .addSelect("building.city", "city")
+                .addSelect("building.quantity_apartment", "quantity_apartment")
+                .addSelect("building.general_status", "general_status")
+                .addSelect("COUNT(building.id)", "count")
+                .groupBy("country")
+                .addGroupBy("province")
+                .addGroupBy("city")
+                .addGroupBy("quantity_apartment")
+                .addGroupBy("general_status")
                 .getRawMany()
 
         ])
         console.log("Total building: ", totalBuilding)
         console.log("Total building by country: ", totalBuildingByCountry)
         console.log("totalBuildingsByCountryAndProvince: ", totalBuildingsByCountryAndProvince)
+        console.log("totalBuildingsByCountryAndProvince: ", totalUsersBuildingsByCountryAndProvinceActive)
 
         res.status(200).json({
             success: true,
@@ -396,7 +424,8 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
             data: {
                 totalBuilding,
                 totalBuildingByCountry,
-                totalBuildingsByCountryAndProvince
+                totalBuildingsByCountryAndProvince,
+                totalUsersBuildingsByCountryAndProvinceActive
             }
         })
     } catch (error) {
@@ -405,52 +434,8 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
-///////////////////// GENERETE PDF BY FILTER
-const generetePdfByFilterBuildInSystem = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { roleName } = req.tokenData;
-        const { country, province } = req.body
-
-        if (roleName !== "superAdmin") { throw new authorizationError("Unauthorized access") }
-
-        const findBuildingGeneretePDF = Buildings.createQueryBuilder("builds")
-        if (!findBuildingGeneretePDF) throw new notFoundError("Not found Building")
-
-        if (country) {
-            findBuildingGeneretePDF.andWhere("builds.country = :country", { country })
-        }
-
-        if (country && province) {
-            findBuildingGeneretePDF.andWhere("builds.country = :country AND builds.province = :province", { country, province })
-        }
-
-        const build = await findBuildingGeneretePDF.getMany()
-        //// GENERETE PDF FROM SYSTEM BUILDING LIST
-        if (findBuildingGeneretePDF) {
-            const pdfDoc = createBuildingPDF(build)
-
-            res.setHeader("Content-Type", "application/pdf")
-            res.setHeader("Content-Disposition", "attachment; filename=buildingInfo.pdf")
-
-            pdfDoc.pipe(res)
-            pdfDoc.end()
-            return
-        }
-
-        res.status(200).json({
-            success: true,
-            mensage: "PDF Generete successfull"
-        })
-
-    } catch (error) {
-        next(error)
-    }
-}
-
-
 /////////////////////   EXPORTING ALL THE METHODS
 export {
     createBuilding, getAllBuildings, getBuildingById, updateBuildingById,
     deleteBuildingById, getfilterElementInBuilding, dashboardBuildig,
-    generetePdfByFilterBuildInSystem
 };

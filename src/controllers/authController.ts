@@ -29,7 +29,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         const user = await Users.findOne({ where: { email } });
         if (email === user?.email) { throw new conflictError('Email already exists') }
 
-        const passwordEcrypted = bcrypt.hashSync(password, 8);
+        const passwordEcrypted = bcrypt.hashSync(password, 10);
 
         if(gender !== 'Hombre' && gender !== 'Man' && 
             gender !== 'Male' && gender !== 'Masculino' &&
@@ -56,7 +56,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
                 gender: genderFormatted,
                 password: passwordEcrypted,
                 role: {
-                    id: 3
+                    id: 6
                 }
             }
         ).save();

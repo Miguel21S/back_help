@@ -58,6 +58,40 @@ export class Users1762634123551 implements MigrationInterface {
                             isNullable: false
                         },
                         {
+                            name: "type_document",
+                            type: "varchar",
+                            length: "30",
+                            isNullable: true
+                        },
+                        {
+                            name: "number_document",
+                            type: "varchar",
+                            length: "50",
+                            isNullable: true
+                        },
+                      /*   {
+                            name: "address",
+                            type: "varchar",
+                            length: "255",
+                            isNullable: true
+                        }, */
+                        {
+                            name: "avatar",
+                            type: "varchar",
+                            length: "500",
+                            isNullable: true
+                        },
+                        {
+                            name: "isActive",
+                            type: "boolean",
+                            default: true
+                        },
+                        {
+                            name: "last_login",
+                            type: "timestamp",
+                            isNullable: true
+                        },
+                        {
                             name: "special_situation",
                             type: "varchar",
                             length: "255",
@@ -74,6 +108,12 @@ export class Users1762634123551 implements MigrationInterface {
                             default: "CURRENT_TIMESTAMP",
                             isNullable: false
                         },
+                        /* {
+                            name: "updated_at",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            onUpdate: "CURRENT_TIMESTAMP"
+                        }, */
                         {
                             name: "password",
                             type: "varchar",

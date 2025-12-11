@@ -13,8 +13,8 @@ router.delete('/auth/admin/delete/:id', auth, isAdmin, user.deleteUser);
 router.get('/user/email', user.compareEmail);
 router.get('/auth/comapremail/user/:id', auth, user.CheckEmailUser)
 router.get('/auth/dashboard/users', auth, user.dashboardUsers);
-router.get('/auth/generetedpdf', auth, user.generetePdfByFilterUsersInSystem);
 router.get('/auth/profile', auth, user.getPrifile);
 router.get('/auth/getmyimage', auth, user.getMyAllImage)
+router.put('/auth/chagepassword/:id', auth, user.changePassword)
 
 export default router;

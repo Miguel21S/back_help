@@ -3,8 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { Users } from "../models/Users.models";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
 import { Not } from "typeorm";
-import { createUsersPDF } from "../../reports/genereteUsersPDF";
+import { createUsersPDF } from "../../reports/genereteUserPDF/genereteUsersPDF";
 import { Buildings } from "../models/Buildings.models";
+import bcrypt from 'bcryptjs'
+import { AppDataSource } from "../../core/database/db";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
@@ -20,14 +22,20 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
                 name: true,
                 lastName: true,
                 email: true,
+                type_document: true,
+                number_document: true,
+                avatar: true,
+                isActive: true,
                 phone: true,
                 date_born: true,
                 gender: true,
                 nationality: true,
                 special_situation: true,
                 date_entry_apartment: true,
+                created_date: true,
                 building_id: true,
-                role_id: true
+                role_id: true,
+                last_login: true
             },
         });
 
@@ -62,7 +70,8 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         const user_id = req.params.id;
         const {
             name, lastName, email, phone, date_born, gender, nationality,
-            building_id, special_situation, date_entry_apartment
+            building_id, special_situation, date_entry_apartment,
+            type_document, number_document
         } = req.body;
 
         if (isNaN(parseInt(user_id))) { throw new badRequestError("Invalid user ID") }
@@ -95,7 +104,10 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
             nationality,
             building_id,
             special_situation,
-            date_entry_apartment
+            date_entry_apartment,
+            type_document,
+            number_document,
+
         };
 
         Object.keys(fieldsToUpdate).forEach(key => {
@@ -130,6 +142,8 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         //         phone,
         //         email,
         //         date_entry_apartment,
+        // type_document,
+        //     number_document
         //     }
         // )
 
@@ -169,6 +183,11 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
                 building_id: true,
                 special_situation: true,
                 date_entry_apartment: true,
+                type_document: true,
+                number_document: true,
+                avatar: true,
+                isActive: true,
+                last_login: true
             }
         });
 
@@ -224,11 +243,6 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 const compareEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const email = req.query.email as string;
-
-        // if (!email) {
-        //     res.status(400).json({ success: false, message: "Email es requerido" });
-        //     return
-        // }
 
         const userEmail = await Users.findOne({ where: { email } });
 
@@ -320,6 +334,14 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
             .getRawMany();
         console.log("Users for age group formatted:", usersForAgeGroup);
 
+        const userIsActive = await AppDataSource.getRepository(Users)
+        .createQueryBuilder("user")
+        .select("user.isActive", "isActive")
+        .addSelect("COUNT(user.id)", "count")
+        .groupBy("isActive")
+        .getRawMany()
+        console.log("ACTIVE:", userIsActive)
+
         const usersForAgeAndGenderGroup = await Users.createQueryBuilder("users")
             // .select(AGE_CASE, "group_age")
             // .addSelect("users.gender", "gender")
@@ -355,84 +377,10 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
                 usersForAge,
                 usersForAgeGroup,
                 usersForAgeAndGenderGroup,
-                usersForNationality
+                usersForNationality,
+                userIsActive
             }
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-//////////////////       GENERETE PDF BY FILTER
-const generetePdfByFilterUsersInSystem = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { roleName } = req.tokenData
-        let { nationality, birthDate, startBirthDate, endBirthDate, date_entry_apartment,
-            startDate_entry_apartment, endDate_entry_apartment, gender } = req.body
-
-        if (roleName !== "superAdmin") { throw new authorizationError("Unauthorized access") }
-
-        let findUsersGeneretePDF = Users.createQueryBuilder("users")
-        if (!findUsersGeneretePDF) { throw new notFoundError("Not found Coutry") }
-
-        if (nationality) {
-            findUsersGeneretePDF.andWhere("users.nationality = :nationality", { nationality })
-        }
-
-        if (birthDate) {
-            const start = new Date(birthDate);
-            const end = new Date(birthDate);
-            start.setHours(0, 0, 0, 0)
-            end.setHours(23, 59, 59, 999)
-
-            findUsersGeneretePDF.andWhere("users.date_born BETWEEN :start AND :end", { start, end })
-        }
-
-        if (startBirthDate && endBirthDate) {
-            findUsersGeneretePDF.andWhere("users.date_born BETWEEN :startBirthDate AND :endBirthDate", { startBirthDate, endBirthDate })
-        }
-
-        if (date_entry_apartment) {
-            findUsersGeneretePDF.andWhere("DATE(users.date_entry_apartment) = :date", { date: date_entry_apartment })
-        }
-
-        if (startDate_entry_apartment && endDate_entry_apartment) {
-            const start = new Date(startDate_entry_apartment);
-            const end = new Date(endDate_entry_apartment);
-
-            end.setHours(23, 59, 59, 999);
-
-            findUsersGeneretePDF.andWhere(
-                "users.date_entry_apartment BETWEEN :start AND :end",
-                { start, end }
-            );
-        }
-
-        if (gender) {
-            findUsersGeneretePDF.andWhere("users.gender = :gender", { gender })
-        }
-
-        const user = await findUsersGeneretePDF.getMany();
-
-        //// GENERETE PDF FROM SYSTEM USER LIST
-        if (findUsersGeneretePDF) {
-            const pdfDoc = createUsersPDF(user);
-
-            res.setHeader("Content-Type", "application/pdf");
-            res.setHeader("Content-Disposition", "attachment; filename=users.pdf");
-
-            pdfDoc.pipe(res);
-            pdfDoc.end();
-            return;
-
-        }
-
-        res.status(200).json({
-            success: true,
-            mesagen: "Country found sucessfull",
-            // data: findUsersGeneretePDF
-        })
-
     } catch (error) {
         next(error)
     }
@@ -504,8 +452,49 @@ const getMyAllImage = async (req: Request, res: Response, next: NextFunction) =>
         next(error)
     }
 }
+
+////////////////////     UPDATE PASSWORD
+const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { roleId, roleName } = req.tokenData;
+        const { password, newPassword } = req.body;
+        const id = req.params.id;
+
+        const user = await Users.findOne({ where: { id: parseInt(id) } })
+        if (!user?.id) {
+            throw new notFoundError("User not found")
+        }
+
+        if (roleId != user?.id || roleName != "superAdmin") { throw new authorizationError('Unauthorized access') }
+
+        if (password !== newPassword) { throw new badRequestError("Passwords do not match") }
+
+        const validPassword = /^(?=.*\d)(?=.*[!\"#\$%&'()*+,-./:;<=>?@[\\\]^_])(?=.*[A-Z])(?=.*[a-z])\S{8,}$/
+        if (password.length < 8) { throw new notFoundError('Password must be longer than 8 characters') }
+
+        if (!validPassword.test(password)) {
+            throw new notFoundError('Password must include at least one digit, one special character, one uppercase letter, one lowercase letter, and no spaces.')
+        }
+
+        const passwordEcrypted = bcrypt.hashSync(password, 10)
+
+        await Users.update(id,
+            {
+                id: parseInt(id),
+                password: passwordEcrypted
+            }
+        )
+
+        res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 export {
     getUsers, getPrifile, getUserById, deleteUser, updateUsers,
     compareEmail, CheckEmailUser, dashboardUsers, getMyAllImage,
-    generetePdfByFilterUsersInSystem
+    changePassword
 };

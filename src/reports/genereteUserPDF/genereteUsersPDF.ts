@@ -26,9 +26,13 @@ export const createUsersPDF = (users: any[]) => {
             { text: "Date_born", bold: true },
             { text: "Email", bold: true },
             { text: "Gender", bold: true },
+            { text: "type_document", bold: true },
+            { text: "number_document", bold: true },
             { text: "Nationality", bold: true },
             { text: "Teléfono", bold: true },
             { text: "date entry apartment", bold: true },
+            { text: "isActive", bold: true },
+            { text: "last_login", bold: true },
         ]
     ];
 
@@ -40,16 +44,22 @@ export const createUsersPDF = (users: any[]) => {
             u.date_born ? new Date(u.date_born).toLocaleDateString() : "",
             u.email,
             u.gender,
+            u.type_document,
+            u.number_document,
             u.nationality,
             u.phone,
-            u.date_entry_apartment ? new Date(u.date_entry_apartment).toLocaleDateString() : ""
+            u.date_entry_apartment ? new Date(u.date_entry_apartment).toLocaleDateString() : "",
+            u.isActive,
+            u.last_login
+            // u.last_login ? new Date(u.date_born).toLocaleDateString() : "",
         ]);
     });
 
     const docDefinition = {
-        pageSize: 'A4',
+        pageSize: 'A3',
         pageOrientation: 'landscape',
         pageMargins: [40, 60, 40, 60],
+
         // defaultStyle: {
         //     font: "Roboto" 
         // },
@@ -63,7 +73,7 @@ export const createUsersPDF = (users: any[]) => {
 
             { text: "Este documento contiene la lista completa de usuarios inscritos en el sistema.", style: "paragraph" },
 
-            { text:`Importante: la siguiente información está actualizada al día de hoy. ${new Date().toLocaleDateString()} | ${new Date().toLocaleTimeString()}`, style: "note" },
+            { text: `Importante: la siguiente información está actualizada al día de hoy. ${new Date().toLocaleDateString()} | ${new Date().toLocaleTimeString()}`, style: "note" },
 
             { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 415, y2: 0 }], style: "separator" },
 
@@ -74,8 +84,9 @@ export const createUsersPDF = (users: any[]) => {
             {
                 table: {
                     headerRows: 1,
-                    widths: ["auto", "auto", "auto", "auto", "auto", "auto", "*", "*", "auto"],
-                    body: tableBody
+                    widths: ["auto", "auto", "auto", "auto", "auto", "auto", "auto", "*", "auto", "*", "auto", "auto", "*"],
+                    body: tableBody,
+                    // style: 'tableBody'
                 },
                 // layout: "lightHorizontalLines"
             },
@@ -119,8 +130,12 @@ export const createUsersPDF = (users: any[]) => {
                 color: "#0055cc",
                 bold: true,
                 margin: [0, 4, 0, 4]
+            },
+            tableBody: {
+                fontSize: 8
             }
         },
+
 
         footer: (currentPage: Number, pageCount: Number) => ({
             // return {

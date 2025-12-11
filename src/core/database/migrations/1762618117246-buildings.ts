@@ -15,17 +15,32 @@ export class Buildings1762618117246 implements MigrationInterface {
                             generationStrategy: "increment"
                         },
                         {
-                            name: "address",
+                            name: "address_line1",
                             type: "varchar",
                             length: "255",
                             isNullable: false
-                        },
+
+                        }, // Calle+Nº o formato del país
                         {
-                            name: "number_build",
+                            name: "address_line2",
                             type: "varchar",
-                            length: "10",
-                            isNullable: false
+                            length: "255",
+                            isNullable: true
+
                         },
+
+                        // {
+                        //     name: "address",
+                        //     type: "varchar",
+                        //     length: "255",
+                        //     isNullable: false
+                        // },
+                        // {
+                        //     name: "number_build",
+                        //     type: "varchar",
+                        //     length: "10",
+                        //     isNullable: false
+                        // },
                         {
                             name: "country",
                             type: "varchar",
@@ -57,14 +72,42 @@ export class Buildings1762618117246 implements MigrationInterface {
                             isNullable: false
                         },
                         {
+                            name: "last_maintenance",
+                            type: "date",
+                            isNullable: true
+                        },
+                        /* {
+                            name: "admin_responsible",
+                            type: "varchar",
+                            length: "255",
+                            isNullable: true
+                        }, */
+                        {
+                            name: "general_status",
+                            type: "varchar",
+                            length: "100",
+                            isNullable: true
+                        },
+                        {
+                            name: "services_available",
+                            type: "varchar",
+                            length: "255",
+                            isNullable: true
+                        },
+                        /*{
+                            name: "photo",
+                            type: "varchar",
+                            length: "500",
+                            isNullable: true
+                        }, */
+                        {
                             name: "quantity_apartment",
                             type: "int",
-                            length: "20",
                             isNullable: false
                         },
                         {
                             name: "floor_number",
-                            type: "varchar",
+                            type: "int",
                             length: "10",
                             isNullable: true
                         },
@@ -72,7 +115,7 @@ export class Buildings1762618117246 implements MigrationInterface {
                     uniques: [
                         {
                             name: "unique_building",
-                            columnNames: ["address", "number_build", "postal_code", "city", "province"],
+                            columnNames: ["address_line1", "postal_code", "city", "province"],
                         },
                     ],
                 }),

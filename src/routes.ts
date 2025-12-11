@@ -12,6 +12,7 @@ import routerBuildign from './entities/routes/buldings.router';
 // import routerImages from './entities/routes/imagens.router';
 // import routerNews from './entities/routes/news.router';
 // import routerNewsImages from './entities/routes/newsImagens.router'
+import routerPDF from './reports/routes/pdf.router'
 import googleAuthRoutes from './controllers/googleAuthRoutes';
 
 const mainRouter = Router();
@@ -20,6 +21,7 @@ mainRouter.use('/', routerController);
 mainRouter.use('/auth', googleAuthRoutes)
 mainRouter.use('/users', routerUsers);
 mainRouter.use('/buildings', routerBuildign);
+mainRouter.use('/pdfs', routerPDF);
 // mainRouter.use('/housing', routerHousing);
 // mainRouter.use('/mascots', routerMascot);
 // mainRouter.use('/cars', routerCars);
