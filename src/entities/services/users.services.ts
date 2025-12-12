@@ -107,7 +107,6 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
             date_entry_apartment,
             type_document,
             number_document,
-
         };
 
         Object.keys(fieldsToUpdate).forEach(key => {

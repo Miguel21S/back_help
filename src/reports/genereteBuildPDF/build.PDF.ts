@@ -50,8 +50,8 @@ const getPdfBuildings = async (req: Request, res: Response, next: NextFunction) 
         const buildings = await Buildings.find({
             select: {
                 id: true,
-                address_line1: true,
-                address_line2: true,
+                address_1: true,
+                address_2: true,
                 country: true,
                 province: true,
                 city: true,

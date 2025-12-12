@@ -12,11 +12,11 @@ export class Buildings extends BaseEntity{
     // @Column({ "name": "number_build" })
     // number_build!: string;
 
-    @Column({ "name": "address_line1" })
-    address_line1!: string;
+    @Column({ "name": "address_1" })
+    address_1!: string;
 
-    @Column({ "name": "address_line2" })
-    address_line2!: string;
+    @Column({ "name": "address_2" })
+    address_2!: string;
 
 
     @Column({ "name": "country" })

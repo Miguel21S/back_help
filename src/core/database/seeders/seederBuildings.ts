@@ -34,8 +34,8 @@ export const seederBuildings = async () => {
         }).save(); */
 
         const building = new Buildings();
-        building.address_line1 = faker.location.streetAddress();
-        building.address_line2 = faker.lorem.words(3);
+        building.address_1 = faker.location.streetAddress();
+        building.address_2 = faker.lorem.words(3);
         building.last_maintenance = faker.date.past().toISOString().split("T")[0];
         // building.admin_responsible = faker.person.fullName();
         building.general_status = faker.helpers.arrayElement(["Active", "Inactive", "Maintenance"]);

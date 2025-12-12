@@ -15,14 +15,14 @@ export class Buildings1762618117246 implements MigrationInterface {
                             generationStrategy: "increment"
                         },
                         {
-                            name: "address_line1",
+                            name: "address_1",
                             type: "varchar",
                             length: "255",
                             isNullable: false
 
                         }, // Calle+Nº o formato del país
                         {
-                            name: "address_line2",
+                            name: "address_2",
                             type: "varchar",
                             length: "255",
                             isNullable: true
@@ -115,7 +115,7 @@ export class Buildings1762618117246 implements MigrationInterface {
                     uniques: [
                         {
                             name: "unique_building",
-                            columnNames: ["address_line1", "postal_code", "city", "province"],
+                            columnNames: ["address_1", "postal_code", "city", "province"],
                         },
                     ],
                 }),

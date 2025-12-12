@@ -33,8 +33,8 @@ export const createBuildingPDF = (buildings: any[]) => {
     buildings.forEach(b => {
         tableBody.push([
             b.id,
-            b.address_line1,
-            b.address_line2,
+            b.address_1,
+            b.address_2,
             b.country,
             b.province,
             b.city,

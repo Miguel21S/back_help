@@ -17,9 +17,9 @@ const createBuilding = async (req: Request, res: Response, next: NextFunction): 
         if (!req.body || Object.keys(req.body).length === 0) {
             throw new badRequestError("El body está vacío");
         }
-        const colp = ["address_line2", "last_maintenance", "services_available"];
+        const colp = ["address_2", "last_maintenance", "services_available"];
         const requiredFields = [
-            "address_line1", "country", "province", "city", "postal_code",
+            "address_1", "country", "province", "city", "postal_code",
             "quantity_apartment", "floor_number", "build_type", "general_status"
         ];
 
@@ -37,7 +37,7 @@ const createBuilding = async (req: Request, res: Response, next: NextFunction): 
 
         const existingBuilding = await Buildings.findOne({
             where: {
-                address_line1: req.body.address_line1,
+                address_1: req.body.address_1,
                 province: req.body.province,
                 city: req.body.city,
                 postal_code: req.body.postal_code,
@@ -75,8 +75,8 @@ const getAllBuildings = async (req: Request, res: Response, next: NextFunction) 
         const buildings = await Buildings.find({
             select: {
                 id: true,
-                address_line1: true,
-                address_line2: true,
+                address_1: true,
+                address_2: true,
                 country: true,
                 province: true,
                 city: true,
@@ -144,8 +144,8 @@ const getBuildingById = async (req: Request, res: Response, next: NextFunction) 
             .where("building.id = :id", { id: building_id })
             .select([
                 "building.id",
-                "building.address_line1",
-                "building.address_line2",
+                "building.address_1",
+                "building.address_2",
                 "building.country",
                 "building.province",
                 "building.city",
@@ -180,7 +180,7 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
         const { roleName } = req.tokenData
         const building_id = req.params.id;
         const {
-            address_line1, address_line2, country, province, city, postal_code, quantity_apartment,
+            address_1, address_2, country, province, city, postal_code, quantity_apartment,
             floor_number, build_type, last_maintenance, general_status, services_available
         } = req.body;
 
@@ -195,10 +195,10 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
 
         if (!building) { throw new notFoundError("Building not found") }
 
-        if (address_line1 || postal_code || city || province) {
+        if (address_1 || postal_code || city || province) {
             const existBuilding = await Buildings.findOne({
                 where: {
-                    address_line1: address_line1,
+                    address_1: address_1,
                     province: province,
                     city: city,
                     postal_code: postal_code,
@@ -214,8 +214,8 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
         await Buildings.update(
             { id: parseInt(building_id) },
             {
-                address_line1,
-                address_line2,
+                address_1,
+                address_2,
                 country,
                 province,
                 city,
@@ -354,8 +354,8 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
             message: "Users count retrieved successfully",
             data: {
                 building_id,
-                address: building.address_line1,
-                address2: building.address_line2,
+                address_1: building.address_1,
+                address_2: building.address_2,
                 totalUsers,
                 userCountInfoBuild,
                 usersByGender,
