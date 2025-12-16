@@ -45,7 +45,7 @@ export class Users extends BaseEntity {
     @Column({ 'name': 'isActive' })
     isActive?: boolean;
 
-    @Column({ type: "timestamp", nullable: true })
+    @Column({ type: "timestamp", onUpdate: 'CURRENT_TIMESTAMP', nullable: true })
     last_login?: Date;
 
     @Column({ 'name': 'date_entry_apartment' })

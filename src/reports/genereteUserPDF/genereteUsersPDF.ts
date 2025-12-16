@@ -1,3 +1,4 @@
+import { formatIsActive } from "../../entities/reusableComponents/reusableComponents";
 
 // import path from "path";
 const PdfPrinter = require("pdfmake/src/printer");
@@ -23,16 +24,16 @@ export const createUsersPDF = (users: any[]) => {
             { text: "ID", bold: true },
             { text: "Nombre", bold: true },
             { text: "Apellido", bold: true },
-            { text: "Date_born", bold: true },
+            { text: "Date born", bold: true },
             { text: "Email", bold: true },
             { text: "Gender", bold: true },
-            { text: "type_document", bold: true },
-            { text: "number_document", bold: true },
+            { text: "Type document", bold: true },
+            { text: "Number document", bold: true },
             { text: "Nationality", bold: true },
             { text: "Teléfono", bold: true },
-            { text: "date entry apartment", bold: true },
-            { text: "isActive", bold: true },
-            { text: "last_login", bold: true },
+            { text: "Date entry apartment", bold: true },
+            { text: "Active", bold: true },
+            { text: "Last login", bold: true },
         ]
     ];
 
@@ -49,8 +50,8 @@ export const createUsersPDF = (users: any[]) => {
             u.nationality,
             u.phone,
             u.date_entry_apartment ? new Date(u.date_entry_apartment).toLocaleDateString() : "",
-            u.isActive,
-            u.last_login
+            formatIsActive(u.isActive),
+            u.last_login ? new Date(u.last_login).toLocaleString() : ""
             // u.last_login ? new Date(u.date_born).toLocaleDateString() : "",
         ]);
     });

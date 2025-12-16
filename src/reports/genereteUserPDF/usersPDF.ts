@@ -56,12 +56,14 @@ const generetePdfByFilterUsersInSystem = async (req: Request, res: Response, nex
             findUsersGeneretePDF.andWhere("users.gender = :gender", { gender })
         }
 
-        if (isActive === 1) {
-            findUsersGeneretePDF.andWhere("users.isActive = :isActive", { isActive })
-        }
+        if (typeof isActive === "string") {
+            if (isActive.toLowerCase() === "activo") {
+                findUsersGeneretePDF.andWhere( "users.isActive = :isActive", { isActive: true });
+            }
 
-        if (isActive === 0) {
-            findUsersGeneretePDF.andWhere("users.isActive = :0", { isActive })
+            if (isActive.toLowerCase() === "inactivo") {
+                findUsersGeneretePDF.andWhere(  "users.isActive = :isActive", { isActive: false });
+            }
         }
 
         if (startLast_login && endLast_login) {
@@ -73,21 +75,21 @@ const generetePdfByFilterUsersInSystem = async (req: Request, res: Response, nex
             findUsersGeneretePDF.andWhere("(users.last_login BETWEEN :start and :end)", { start, end })
         }
         const user = await findUsersGeneretePDF.getMany();
-        const usersFormatted = user.map(u => ({
-            ...u,
-            last_login: u.last_login
-                ? new Date(u.last_login).toLocaleString("es-ES", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })
-                : ""
-        }));
+        // const usersFormatted = user.map(u => ({
+        //     ...u,
+        //     last_login: u.last_login
+        //         ? new Date(u.last_login).toLocaleString("es-ES", {
+        //             day: "2-digit",
+        //             month: "2-digit",
+        //             year: "numeric",
+        //             hour: "2-digit",
+        //             minute: "2-digit"
+        //         })
+        //         : ""
+        // }));
         //// GENERETE PDF FROM SYSTEM USER LIST
         if (findUsersGeneretePDF) {
-            const pdfDoc = createUsersPDF(usersFormatted);
+            const pdfDoc = createUsersPDF(user);
 
             res.setHeader("Content-Type", "application/pdf");
             res.setHeader("Content-Disposition", "attachment; filename=users.pdf");

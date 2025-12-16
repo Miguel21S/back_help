@@ -112,6 +112,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             }
         )
 
+        await Users.update(user?.id, { last_login: new Date()})
+
         res.status(200).json({
             success: true,
             message: 'User logged in successfully',

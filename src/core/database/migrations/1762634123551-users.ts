@@ -89,6 +89,7 @@ export class Users1762634123551 implements MigrationInterface {
                         {
                             name: "last_login",
                             type: "timestamp",
+                            onUpdate: 'CURRENT_TIMESTAMP',
                             isNullable: true
                         },
                         {
