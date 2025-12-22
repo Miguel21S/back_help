@@ -7,6 +7,7 @@ import path from 'path';
 import './controllers/passport';
 import mainRouter from './routes';
 import passport from 'passport';
+import "./jobs/user-status.job";
 
 const app: Application = express();
 const PORT = process.env.PORT || 3025;

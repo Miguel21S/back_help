@@ -12,13 +12,14 @@ const generetePdfByFilterUsersInSystem = async (req: Request, res: Response, nex
             date_entry_apartment, startDate_entry_apartment,
             endDate_entry_apartment, gender, isActive, startLast_login,
             endLast_login
-        } = req.body
+        } = req.body || {}
 
         if (roleName !== "superAdmin") { throw new authorizationError("Unauthorized access") }
-
+        
         let findUsersGeneretePDF = Users.createQueryBuilder("users")
-        if (!findUsersGeneretePDF) { throw new notFoundError("Not found Coutry") }
 
+        if (!findUsersGeneretePDF) { throw new notFoundError("Not found Coutry") }
+        
         if (nationality) {
             findUsersGeneretePDF.andWhere("users.nationality = :nationality", { nationality })
         }

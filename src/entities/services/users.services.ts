@@ -15,7 +15,7 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roleName = req.tokenData.roleName;
 
-        if ( roleName !== "superAdmin" && roleName !== "admin") { throw new authorizationError("Unauthorized access") }
+        if (roleName !== "superAdmin" && roleName !== "admin") { throw new authorizationError("Unauthorized access") }
 
         const users = await Users.find({
             select: {
@@ -63,7 +63,7 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-////////////////////  GET USER BY ID
+////////////////////  UPDATE USER BY ID
 const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { roleId, roleName } = req.tokenData;
@@ -236,6 +236,26 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+////////////////////  UPDATE USER BY LAST LOGIN
+export const inactiveActivateUsers = async () => {
+    try {
+        await AppDataSource.getRepository(Users)
+            .createQueryBuilder()
+            .update()
+            .set({ isActive: false })
+            // .where("last_login < NOW() - INTERVAL :minutes MINUTE", { minutes })
+            .where("last_login IS NOT NULL")
+            .andWhere("role_id != :adminRole", { adminRole: 1 })
+            .andWhere("last_login < NOW() - INTERVAL 90 DAY")
+            .execute();
+
+        // console.log("Usuarios inactivos actualizados correctamente");
+    } catch (error) {
+        console.error("Error al desactivar usuarios inactivos", error);
+    }
+
+}
+
 ///////////////////      COMPARE EMAIL USERS
 const compareEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -331,6 +351,7 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
             .getRawMany();
         console.log("Users for age group formatted:", usersForAgeGroup);
 
+        //// REVISAR PARA IMPRIMIR AUN TIENE PROBLEMAS
         const userIsActive = await AppDataSource.getRepository(Users)
             .createQueryBuilder("user")
             .select("user.isActive", "isActive")
@@ -495,16 +516,16 @@ const changeRole = async (req: Request, res: Response, next: NextFunction) => {
         const { roleName } = req.tokenData
         const { email, nameRole } = req.body
 
-        if (roleName !== 'superAdmin' && roleName !== 'admin' ) { throw new authorizationError('Unauthorized access') }
+        if (roleName !== 'superAdmin' && roleName !== 'admin') { throw new authorizationError('Unauthorized access') }
 
         const user = await Users.findOne({ where: { email: email } })
         if (!user) { throw new notFoundError('User not found') }
 
         const role = await Roles.findOne({ where: { name: nameRole } });
         if (!role) throw new notFoundError('Role not found');
-      
+
         const updateRole = await Users.update(
-            {email},
+            { email },
             {
                 email: email,
                 role_id: role?.id

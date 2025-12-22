@@ -10,10 +10,10 @@ RUN apt-get update && apt-get install -y build-essential python3 && rm -rf /var/
 # COPIAR PACKAGE.JSON Y PACKAGE-LOCK.JSON
 COPY package*.json ./
 
-# INSTALAR DEPENDENCIAS
+# INSTALAR DEPENDENCIAS (dev + prod)
 #RUN npm install -g ts-node typescript
 
-# DESPUÉS
+# DESPUÉS (dev + prod)
 RUN npm install --legacy-peer-deps
 
 # COPIAR EL RESTO DEL CÓDIGO

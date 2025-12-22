@@ -31,20 +31,20 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
         const passwordEcrypted = bcrypt.hashSync(password, 10);
 
-        if(gender !== 'Hombre' && gender !== 'Man' && 
+        if (gender !== 'Hombre' && gender !== 'Man' &&
             gender !== 'Male' && gender !== 'Masculino' &&
             gender !== 'Mujer' && gender !== 'Masculina' &&
             gender !== 'Women' && gender !== 'Female'
-        ){
+        ) {
             throw new badRequestError('Gender must be either Male or Female');
         }
 
         let genderFormatted;
-        if(gender === 'Hombre' || gender === 'Man' || gender === 'Male' || gender === 'Masculino'){
+        if (gender === 'Hombre' || gender === 'Man' || gender === 'Male' || gender === 'Masculino') {
             genderFormatted = 'MALE';
         }
 
-        if(gender === 'Mujer' || gender === 'Masculina' || gender === 'Women' || gender === 'Female'){
+        if (gender === 'Mujer' || gender === 'Masculina' || gender === 'Women' || gender === 'Female') {
             genderFormatted = 'FEMALE';
         }
 
@@ -90,21 +90,29 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
                 id: true,
                 name: true,
                 lastName: true,
-                email: email,
-                password: password,
+                email: true,
+                password: true,
+                isActive: true
             }
         })
+        if (!user) { throw new badRequestError('Invalid email or password') }
 
-        if (!user?.email) { throw new badRequestError('Invalid email or password') }
         const validPassword = await bcrypt.compare(password, user!.password);
-        
         if (!validPassword) { throw new badRequestError('Invalid email or password') }
-        
+
+        if (!user?.isActive) {
+            return res.status(403).json({
+                success: false,
+                message: 'Tu cuenta está desactivada. Contacta al soporte.'
+            });
+        }
+
         const token = Jwt.sign(
             {
-                roleId: user?.id,
+                userId: user.id,
+                user: user?.name,
+                roleId: user.role.id,
                 roleName: user?.role.name,
-                user: user?.name
             },
             process.env.JWT_SECRET as string,
             {
@@ -112,7 +120,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             }
         )
 
-        await Users.update(user?.id, { last_login: new Date()})
+        await Users.update(user?.id, { last_login: new Date() })
 
         res.status(200).json({
             success: true,
@@ -120,7 +128,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             token: token
         })
     } catch (error) {
-       next(error)
+        next(error)
     }
 }
 

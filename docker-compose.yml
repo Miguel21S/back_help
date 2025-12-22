@@ -24,15 +24,18 @@ services:
       - database
     env_file:
       - .env
-    environment:
-      - NODE_ENV=development
-      - FORCE_COLOR=1
-      - NODE_DISABLE_COLORS=0
-      - NODE_OPTIONS=--no-warnings --trace-warnings --enable-source-maps --trace-deprecation --trace-uncaught --trace-exit --unhandled-rejections=strict --trace-event-categories node.async_hooks --trace-event-file-pattern=./trace*.log
     command: ["npm", "run", "dev"] 
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./src:/app/src:cached
+      - ./config:/app/config:cached
+      # - .:/app
+      # - ./src:/app/src
+      # - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      # - FORCE_COLOR=1
+      # - NODE_DISABLE_COLORS=0
+      # - NODE_OPTIONS=--no-warnings --trace-warnings --enable-source-maps --trace-deprecation --trace-uncaught --trace-exit --unhandled-rejections=strict --trace-event-categories node.async_hooks --trace-event-file-pattern=./trace*.log
 
 volumes:
   help_me_mysql:
