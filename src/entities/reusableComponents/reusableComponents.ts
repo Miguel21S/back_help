@@ -13,3 +13,7 @@ export const formatIsActive = (value: boolean) => {
 }
 
 // formatIsActive(u.isActive)
+
+export const validEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())
+
+export const validPassword = (password) => /^(?=.*\d)(?=.*[!\"#\$%&'()*+,-./:;<=>?@[\\\]^_])(?=.*[A-Z])(?=.*[a-z])\S{8,}$/.test(password)

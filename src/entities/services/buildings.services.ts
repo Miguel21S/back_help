@@ -4,6 +4,7 @@ import { Buildings } from "../models/Buildings.models";
 import { Not } from "typeorm";
 import { Users } from "../models/Users.models";
 import { AppDataSource } from "../../core/database/db";
+import { createBuildingPDF } from "../../reports/genereteBuildPDF/genereteBuildingsPDF";
 
 const createBuilding = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -90,7 +91,17 @@ const getAllBuildings = async (req: Request, res: Response, next: NextFunction) 
             }
         })
 
-        console.log(buildings);
+        //// GENERETE PDF FROM SYSTEM BUILDING LIST
+        if (req.query.pdf === "true") {
+            const pdfDoc = createBuildingPDF(buildings);
+
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader("Content-Disposition", "attachment; filename=buildingInfo.pdf");
+
+            pdfDoc.pipe(res);
+            pdfDoc.end();
+            return;
+        }
 
         res.status(200).json({
             success: true,

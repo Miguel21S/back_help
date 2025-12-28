@@ -6,9 +6,8 @@ import { isAdmin } from "../../core/middleware/isAdmin";
 
 const router = Router();
 
-router.post('/auth/filterpdfusers', auth, user.generetePdfByFilterUsersInSystem);
-router.get('/auth/filterpdfbuildings', auth, isAdmin, building.generetePdfByFilterBuildInSystem);
-router.get('/auth/admin/generetionpdf', auth, isAdmin, building.getPdfBuildings);
+router.post('/auth/filterpdfusers', auth, isAdmin, user.generetePdfByFilterUsersInSystem);
+router.post('/auth/filterpdfbuildings', auth, isAdmin, building.generetePdfByFilterBuildInSystem);
 
 
 export default router;

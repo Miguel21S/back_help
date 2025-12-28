@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 import { Users } from "../entities/models/Users.models";
 import { badRequestError, conflictError, notFoundError } from "../core/utils/errorsStatusCodes";
+import { validEmail, validPassword } from "../entities/reusableComponents/reusableComponents";
 
 ///////////////////////////// METHOD REGISTER //////////////////////////
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,15 +17,13 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             throw new badRequestError("All fields are required: name, lastName, email, date_born, gender, password")
         }
 
-        const validPassword = /^(?=.*\d)(?=.*[!\"#\$%&'()*+,-./:;<=>?@[\\\]^_])(?=.*[A-Z])(?=.*[a-z])\S{8,}$/
         if (password.length < 8) { throw new notFoundError('Password must be longer than 8 characters') }
 
-        if (!validPassword.test(password)) {
+        if (!validPassword(password)) {
             throw new notFoundError('Password must include at least one digit, one special character, one uppercase letter, one lowercase letter, and no spaces.')
         }
-
-        const validEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-        if (!validEmail.test(email)) { throw new badRequestError('Invalid email format') }
+    
+        if (!validEmail(email)) { throw new badRequestError('Invalid email format') }
 
         const user = await Users.findOne({ where: { email } });
         if (email === user?.email) { throw new conflictError('Email already exists') }

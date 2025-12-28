@@ -8,6 +8,7 @@ import { Buildings } from "../models/Buildings.models";
 import bcrypt from 'bcryptjs'
 import { AppDataSource } from "../../core/database/db";
 import { Roles } from "../models/Roles.models";
+import { validEmail, validPassword } from "../reusableComponents/reusableComponents";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
@@ -80,6 +81,8 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         if (!user) { throw new notFoundError('User not found') }
 
         if (user.id !== roleId && roleName !== 'superAdmin') { throw new authorizationError("Unauthorized access") }
+
+        if(validEmail(email)){ throw new badRequestError("Envalid email")}
 
         if (email) {
             const existEmail = await Users.findOne({
@@ -485,10 +488,9 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
 
         if (password !== newPassword) { throw new badRequestError("Passwords do not match") }
 
-        const validPassword = /^(?=.*\d)(?=.*[!\"#\$%&'()*+,-./:;<=>?@[\\\]^_])(?=.*[A-Z])(?=.*[a-z])\S{8,}$/
         if (password.length < 8) { throw new notFoundError('Password must be longer than 8 characters') }
 
-        if (!validPassword.test(password)) {
+        if (!validPassword(password)) {
             throw new notFoundError('Password must include at least one digit, one special character, one uppercase letter, one lowercase letter, and no spaces.')
         }
 

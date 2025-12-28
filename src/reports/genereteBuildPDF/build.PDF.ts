@@ -45,44 +45,9 @@ const generetePdfByFilterBuildInSystem = async (req: Request, res: Response, nex
     }
 }
 
-const getPdfBuildings = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const buildings = await Buildings.find({
-            select: {
-                id: true,
-                address_1: true,
-                address_2: true,
-                country: true,
-                province: true,
-                city: true,
-                postal_code: true,
-                build_type: true,
-                last_maintenance: true,
-                general_status: true,
-                services_available: true,
-                quantity_apartment: true,
-                floor_number: true,
-            }
-        })
 
-        //// GENERETE PDF FROM SYSTEM BUILDING LIST
-        if (req.query.pdf === "true") {
-            const pdfDoc = createBuildingPDF(buildings);
-
-            res.setHeader("Content-Type", "application/pdf");
-            res.setHeader("Content-Disposition", "attachment; filename=buildingInfo.pdf");
-
-            pdfDoc.pipe(res);
-            pdfDoc.end();
-            return;
-        }
-        
-    } catch (error) {
-        next(error);
-    }
-}
 
 /////////////////////   EXPORTING ALL THE METHODS
 export {
-    generetePdfByFilterBuildInSystem, getPdfBuildings
+    generetePdfByFilterBuildInSystem,
 };
