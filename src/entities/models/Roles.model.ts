@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Users } from "./Users.models";
+import { Users } from "./Users.model";
 import { Permission } from "./Permission.model";
 // import { permission } from "process";
 

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
-import { Buildings } from "../models/Buildings.models";
+import { Buildings } from "../models/Buildings.model";
 import { Not } from "typeorm";
-import { Users } from "../models/Users.models";
+import { Users } from "../models/Users.model";
 import { AppDataSource } from "../../core/database/db";
 import { createBuildingPDF } from "../../reports/genereteBuildPDF/genereteBuildingsPDF";
 

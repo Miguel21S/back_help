@@ -1,13 +1,13 @@
 
 import { NextFunction, Request, Response } from "express";
-import { Users } from "../models/Users.models";
+import { Users } from "../models/Users.model";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
 import { Not } from "typeorm";
 import { createUsersPDF } from "../../reports/genereteUserPDF/genereteUsersPDF";
-import { Buildings } from "../models/Buildings.models";
+import { Buildings } from "../models/Buildings.model";
 import bcrypt from 'bcryptjs'
 import { AppDataSource } from "../../core/database/db";
-import { Roles } from "../models/Roles.models";
+import { Roles } from "../models/Roles.model";
 import { validEmail, validPassword } from "../reusableComponents/reusableComponents";
 // import { Imagens } from "../models/Imagens.models";
 

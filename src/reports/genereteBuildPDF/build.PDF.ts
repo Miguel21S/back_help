@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { authorizationError, notFoundError } from "../../core/utils/errorsStatusCodes";
-import { Buildings } from "../../entities/models/Buildings.models";
+import { Buildings } from "../../entities/models/Buildings.model";
 import { createBuildingPDF } from "./genereteBuildingsPDF";
 
 ///////////////////// GENERETE PDF BY FILTER

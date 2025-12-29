@@ -1,4 +1,4 @@
-import { Roles } from "../../../entities/models/Roles.models";
+import { Roles } from "../../../entities/models/Roles.model";
 
 export const seederRoles = async () => {
     const roles = [

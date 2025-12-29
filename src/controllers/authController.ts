@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
-import { Users } from "../entities/models/Users.models";
+import { Users } from "../entities/models/Users.model";
 import { badRequestError, conflictError, notFoundError } from "../core/utils/errorsStatusCodes";
 import { validEmail, validPassword } from "../entities/reusableComponents/reusableComponents";
 

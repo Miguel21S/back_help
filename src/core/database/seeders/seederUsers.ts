@@ -1,4 +1,4 @@
-import { Users } from "../../../entities/models/Users.models";
+import { Users } from "../../../entities/models/Users.model";
 import bcryptjs from "bcryptjs";
 // import { faker } from "@faker-js/faker"
 

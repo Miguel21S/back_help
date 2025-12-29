@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Roles } from "./Roles.models";
-import { Buildings } from "./Buildings.models";
+import { Roles } from "./Roles.model";
+import { Buildings } from "./Buildings.model";
+import { Teacher } from "./Teachers.model";
 
 
 @Entity("users")
@@ -70,4 +71,7 @@ export class Users extends BaseEntity {
     @ManyToOne(() => Roles, (roles) => roles.users)
     @JoinColumn({ 'name': 'role_id' })
     role!: Roles;
+
+    @OneToMany(()=> Teacher, (teacher) => teacher.user)
+    teachers!: Teacher[];
 }

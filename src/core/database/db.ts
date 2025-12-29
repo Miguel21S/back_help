@@ -7,10 +7,10 @@ import { Buildings1762618117246 } from './migrations/1762618117246-buildings';
 import { Users1762634123551 } from './migrations/1762634123551-users';
 import { Permission1737758326811 } from './migrations/1737758326811-permission';
 
-import { Roles } from '../../entities/models/Roles.models';
-import { Users } from '../../entities/models/Users.models';
+import { Roles } from '../../entities/models/Roles.model';
+import { Users } from '../../entities/models/Users.model';
 import { Permission } from '../../entities/models/Permission.model';
-import { Buildings } from '../../entities/models/Buildings.models';
+import { Buildings } from '../../entities/models/Buildings.model';
 
 export const AppDataSource = new DataSource({
     type: "mysql",
