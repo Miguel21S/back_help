@@ -40,9 +40,10 @@ export class Faculties1766925853555 implements MigrationInterface {
                             isNullable: true,
                         },
                         {
-                            name: 'date_creation',
-                            type: 'date',
-                            isNullable: false,
+                            name: "created_date",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false
                         },
                         {
                             name: 'institution_id',
@@ -50,7 +51,7 @@ export class Faculties1766925853555 implements MigrationInterface {
                             isNullable: false,
                         }
                     ],
-                    foreignKeys:[
+                    foreignKeys: [
                         {
                             columnNames: ['institution_id'],
                             referencedTableName: 'institutions',

@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Institution } from "./Institutions.model";
 import { Department } from "./Departments.model";
 import { Program } from "./Programs.model";
@@ -21,8 +21,8 @@ export class Faculty extends BaseEntity{
     @Column({ 'name': 'email' })
     email!: string;
 
-    @Column({ 'name': 'date_creation' })
-    date_creation!: Date;
+    @CreateDateColumn({ name: "created_date", type: "timestamp"})
+    created_date!: Date;
 
     // @Column({ 'name': 'institution_id' })
     // institution_id!: number;

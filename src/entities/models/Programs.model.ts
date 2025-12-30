@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
 
 
@@ -25,8 +25,8 @@ export class Program extends BaseEntity {
     @Column({ 'name': 'coordinator' })
     coordinator!: string;
 
-    @Column({ 'name': 'date_creation' })
-    date_creation!: Date;
+    @CreateDateColumn({ name: "created_date", type: "timestamp" })
+    created_date!: Date;
 
     @Column({ 'name': 'faculty_id' })
     faculty_id!: number;

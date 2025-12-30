@@ -34,9 +34,10 @@ export class Departments1766925969807 implements MigrationInterface {
                             isNullable: true,
                         },
                         {
-                            name: 'date_creation',
-                            type: 'date',
-                            isNullable: false,
+                            name: "created_date",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false
                         },
                         {
                             name: 'faculty_id',
@@ -48,11 +49,11 @@ export class Departments1766925969807 implements MigrationInterface {
                             type: 'int',
                             isNullable: false,
                         },
-                        {
-                            name: 'employee_id',
-                            type: 'int',
-                            isNullable: false,
-                        }
+                        // {
+                        //     name: 'employee_id',
+                        //     type: 'int',
+                        //     isNullable: false,
+                        // }
                     ],
                     foreignKeys: [
                         {
@@ -67,12 +68,12 @@ export class Departments1766925969807 implements MigrationInterface {
                             referencedColumnNames: ['id'],
                             onDelete: 'CASCADE'
                         },
-                        {
-                            columnNames: ['employee_id'],
-                            referencedTableName: 'employees',
-                            referencedColumnNames: ['id'],
-                            onDelete: 'CASCADE'
-                        }
+                        // {
+                        //     columnNames: ['employee_id'],
+                        //     referencedTableName: 'employees',
+                        //     referencedColumnNames: ['id'],
+                        //     onDelete: 'CASCADE'
+                        // }
                     ]
                 }
             )

@@ -22,9 +22,10 @@ export class Employees1766926301953 implements MigrationInterface {
                             isNullable: false,
                         },
                         {
-                            name: 'date_creation',
-                            type: 'date',
-                            isNullable: false,
+                            name: "created_date",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false
                         },
                         {
                             name: 'faculty_id',

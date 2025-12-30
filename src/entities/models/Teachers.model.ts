@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Users } from "./Users.model";
 import { Department } from "./Departments.model";
 
@@ -14,14 +14,11 @@ export class Teacher extends BaseEntity{
     @Column({'name': 'specialty'})
     specialty!: string;
 
-    @Column({'name': 'data_creation'})
-    data_creation!: Date;
-
     @Column({'name': 'user_id'})
     user_id!: number;
 
-    @Column({'name': 'date_creation'})
-    date_creation!: Date;
+    @CreateDateColumn({ name: "created_date", type: "timestamp"})
+    created_date!: Date;
 
     @Column({'name': 'department_id'})
     department_id!: number;

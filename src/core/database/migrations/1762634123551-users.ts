@@ -126,20 +126,9 @@ export class Users1762634123551 implements MigrationInterface {
                             type: 'int',
                             isNullable: true
                         },
-                        {
-                            name: "role_id",
-                            type: "int",
-                            isNullable: false
-                        },
 
                     ],
                     foreignKeys: [
-                        {
-                            columnNames: ["role_id"],
-                            referencedTableName: "roles",
-                            referencedColumnNames: ["id"],
-                            onDelete: "CASCADE"
-                        },
                         {
                             columnNames: ["building_id"],
                             referencedTableName: "buildings",

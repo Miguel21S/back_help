@@ -111,6 +111,12 @@ export class Buildings1762618117246 implements MigrationInterface {
                             length: "10",
                             isNullable: true
                         },
+                        {
+                            name: "created_date",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false
+                        },
                     ],
                     uniques: [
                         {

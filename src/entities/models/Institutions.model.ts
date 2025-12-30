@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
 import { Department } from "./Departments.model";
 
@@ -37,8 +37,8 @@ export class Institution extends BaseEntity{
     @Column({'name': 'website'})
     website?: string;
 
-    @Column({'name': 'date_creation'})  
-    date_creation?: Date;
+    @CreateDateColumn({ name: "created_date", type: "timestamp" })
+    created_date?: Date;
 
     @OneToMany(() => Faculty, (faculty) => faculty.institution)
     faculties!: Faculty[];

@@ -1,4 +1,3 @@
-import { error } from "console";
 import { Buildings } from "../../../entities/models/Buildings.model";
 // import { faker } from "@faker-js/faker";
 

@@ -5,7 +5,7 @@ export class Programs1766934920847 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-               /*  programs -> corsos -> assignatures */
+                /*  programs -> corsos -> assignatures */
                 name: "programs",
                 columns: [
                     {
@@ -50,9 +50,10 @@ export class Programs1766934920847 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
-                        name: 'date_creation',
-                        type: 'date',
-                        isNullable: false,
+                        name: "created_date",
+                        type: "timestamp",
+                        default: "CURRENT_TIMESTAMP",
+                        isNullable: false
                     },
                     {
                         name: 'faculty_id',

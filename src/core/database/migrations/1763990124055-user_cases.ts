@@ -44,8 +44,7 @@ export class UserCases1763990124055 implements MigrationInterface {
                     },
                     {
                         name: "created_date",
-                        type: "timestamp",
-                        default: "CURRENT_TIMESTAMP",
+                        type: "date",
                         isNullable: false
                     }
                 ],

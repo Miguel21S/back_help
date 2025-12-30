@@ -14,25 +14,31 @@ export class Permission1737758326811 implements MigrationInterface {
                         generationStrategy: "increment"
                     },
                     {
-                        name: "permission_name",
+                        name: "name",
                         type: "varchar",
                         length: "255",
                         isNullable: false
                     },
                     {
-                        name: "role_id",
-                        type: "int",
-                        isNullable: false
+                        name: "description",
+                        type: "varchar",
+                        length: "500",
+                        isNullable: true
                     },
-                ],
-                foreignKeys: [
                     {
-                        columnNames: ["role_id"],
-                        referencedTableName: "roles",
-                        referencedColumnNames: ["id"],
-                        onDelete: "CASCADE"
+                        name: 'created_date',
+                        type: "timestamp",
+                        default: "CURRENT_TIMESTAMP",
+                        isNullable: false,
+                    },
+                    {
+                        name: 'created_updated',
+                        type: "timestamp",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                        isNullable: false,
                     }
-                ]
+                ],
             })
         )
     }

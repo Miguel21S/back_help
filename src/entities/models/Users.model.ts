@@ -1,7 +1,7 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Roles } from "./Roles.model";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Buildings } from "./Buildings.model";
 import { Teacher } from "./Teachers.model";
+import { User_role } from "./User_roles.model";
 
 
 @Entity("users")
@@ -52,7 +52,7 @@ export class Users extends BaseEntity {
     @Column({ 'name': 'date_entry_apartment' })
     date_entry_apartment!: Date;
 
-    @Column({ "name": "created_date" })
+    @CreateDateColumn({ name: "created_date", type: "timestamp"})
     created_date!: Date;
 
     @Column({ 'name': 'password' })
@@ -61,16 +61,12 @@ export class Users extends BaseEntity {
     @Column({ 'name': 'building_id' })
     building_id!: number;
 
-    @Column({ 'name': 'role_id' })
-    role_id!: number;
-
     @ManyToOne(() => Buildings, (buildings) => buildings.users)
     @JoinColumn({ 'name': 'building_id' })
     building!: Buildings;
 
-    @ManyToOne(() => Roles, (roles) => roles.users)
-    @JoinColumn({ 'name': 'role_id' })
-    role!: Roles;
+    @OneToMany(() => User_role, (user_role) => user_role.user_id)
+    user_roles!: User_role[];
 
     @OneToMany(()=> Teacher, (teacher) => teacher.user)
     teachers!: Teacher[];

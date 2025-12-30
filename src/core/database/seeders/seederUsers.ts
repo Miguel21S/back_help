@@ -4,43 +4,41 @@ import bcryptjs from "bcryptjs";
 
 export const seederUsers = async () => {
     const { faker } = await import("@faker-js/faker");
-    const superAdmin = Users.create({
-        // name: "Super",
-        // lastName: "Admin",
-        // date_born: new Date("1990-01-01"),
-        // nationality: "Spain",
-        // gender: "Male".toUpperCase(),
-        // special_situation: "Bien",
-        // phone: "600000000",
-        // email: "superadmin@gmail.com",
-        // date_entry_apartment: new Date(),
-        // password: await bcryptjs.hash("Superadmin.123", 10),
-        // building_id: 1,
-        // role_id: 1,
 
-        name: "Super",
-        lastName: "Admin",
-        date_born: new Date("1990-01-01"),
-        nationality: "Spain",
-        gender: "Male".toUpperCase(),
-        special_situation: "Bien",
-        phone: "600000000",
-        email: "superadmin@gmail.com",
-
-        type_document: "DNI", // reemplazo manual
-        number_document: "12345678A", // reemplazo manual
-        avatar: faker.image.avatar(),
-        isActive: true,
-        last_login: new Date(),
-
-        date_entry_apartment: new Date(),
-        password: await bcryptjs.hash("Superadmin.123", 10),
-        building_id: 1,
-        role_id: 1,
+    let superAdmin = await Users.findOne({
+        where: { email: "superadmin@gmail.com" },
     });
-    await superAdmin.save();
+
+    if (!superAdmin) {
+        superAdmin = Users.create({
+
+            name: "Super",
+            lastName: "Admin",
+            date_born: new Date("1990-01-01"),
+            nationality: "Spain",
+            gender: "Male".toUpperCase(),
+            special_situation: "Bien",
+            phone: "600000000",
+            email: "superadmin@gmail.com",
+
+            type_document: "DNI", // reemplazo manual
+            number_document: "12345678A", // reemplazo manual
+            avatar: faker.image.avatar(),
+            isActive: true,
+            last_login: new Date(),
+
+            date_entry_apartment: new Date(),
+            password: await bcryptjs.hash("Superadmin.123", 10),
+            building_id: 1,
+        });
+        await superAdmin.save();
+    }
 
     for (let i = 0; i < 100; i++) {
+        const email = faker.internet.email().toLowerCase();
+
+        const exists = await Users.findOne({ where: { email } });
+        if (exists) continue;
 
         const user = Users.create({
             name: faker.person.firstName(),
@@ -62,7 +60,6 @@ export const seederUsers = async () => {
             password: await bcryptjs.hash("User.123456", 10),
 
             building_id: faker.number.int({ min: 1, max: 10 }),
-            role_id: 6
         });
 
         await user.save();

@@ -76,10 +76,11 @@ export class Institutions1766925750381 implements MigrationInterface {
                             isNullable: true,
                         },
                         {
-                            name: 'date_creation',
-                            type: 'date',
-                            isNullable: true,
-                        },  
+                            name: "created_date",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false
+                        },
                     ]
                 }
             )

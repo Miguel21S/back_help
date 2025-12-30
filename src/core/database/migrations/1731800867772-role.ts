@@ -21,6 +21,24 @@ export class Role1731800867772 implements MigrationInterface {
                             length: "255",
                             isNullable: false,
                         },
+                        {
+                            name: "description",
+                            type: "varchar",
+                            length: "255",
+                            isNullable: true,
+                        },
+                        {
+                            name: "created_date",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false
+                        },
+                        {
+                            name: "date_updated",
+                            type: "timestamp",
+                            default: "CURRENT_TIMESTAMP",
+                            isNullable: false,
+                        }
                     ],
                 }
             ),

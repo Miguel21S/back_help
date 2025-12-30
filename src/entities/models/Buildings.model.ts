@@ -1,9 +1,9 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Users } from "./Users.model";
 
 
 @Entity("buildings")
-export class Buildings extends BaseEntity{
+export class Buildings extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number
 
@@ -21,7 +21,7 @@ export class Buildings extends BaseEntity{
 
     @Column({ "name": "country" })
     country!: string;
-    
+
     @Column({ "name": "province" })
     province!: string;
 
@@ -39,22 +39,25 @@ export class Buildings extends BaseEntity{
 
     // @Column({ "name": "admin_responsible" })
     // admin_responsible!: string;
-    
+
     @Column({ "name": "general_status" })
     general_status!: string;
-    
+
     @Column({ "name": "services_available" })
     services_available!: string;
-    
+
     // @Column({ "name": "photo" })
     // photo!: string;
 
     @Column({ "name": "quantity_apartment" })
     quantity_apartment!: number;
 
-    
+
     @Column({ "name": "floor_number" })
     floor_number!: string;
+
+    @CreateDateColumn({ name: "created_date", type: "timestamp"})
+    created_date!: Date;
 
     @OneToMany(() => Users, (users) => users.building)
     users!: Users[];

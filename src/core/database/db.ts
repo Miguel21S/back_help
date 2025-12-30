@@ -11,6 +11,20 @@ import { Roles } from '../../entities/models/Roles.model';
 import { Users } from '../../entities/models/Users.model';
 import { Permission } from '../../entities/models/Permission.model';
 import { Buildings } from '../../entities/models/Buildings.model';
+import { Role_permission } from '../../entities/models/Role_permissions.model';
+import { User_role } from '../../entities/models/User_roles.model';
+import { RolePermissions1767057211575 } from './migrations/1767057211575-role_permissions';
+import { UserRoles1767057541372 } from './migrations/1767057541372-user_roles';
+import { Teacher } from '../../entities/models/Teachers.model';
+import { Institution } from '../../entities/models/Institutions.model';
+import { Faculty } from '../../entities/models/Faculty.model';
+import { Department } from '../../entities/models/Departments.model';
+import { Program } from '../../entities/models/Programs.model';
+import { Institutions1766925750381 } from './migrations/1766925750381-institutions';
+import { Faculties1766925853555 } from './migrations/1766925853555-faculties';
+import { Departments1766925969807 } from './migrations/1766925969807-departments';
+import { Teachers1766926029074 } from './migrations/1766926029074-teachers';
+import { Programs1766934920847 } from './migrations/1766934920847-programs';
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -21,10 +35,14 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD || "2511",
     database: process.env.DB_DATABASE || "help_me_dev",
 
-    entities: [Roles, Buildings, Users, Permission,
+    entities: [Roles, Permission, Role_permission, User_role, Buildings, Users,
+        Institution, Faculty, Department, Teacher, Program
+
     ],
 
-    migrations: [Role1731800867772,  Buildings1762618117246, Users1762634123551, Permission1737758326811,
+    migrations: [Role1731800867772, Permission1737758326811, RolePermissions1767057211575, UserRoles1767057541372,
+        Buildings1762618117246, Users1762634123551, Institutions1766925750381, Faculties1766925853555, Departments1766925969807,
+        Teachers1766926029074, Programs1766934920847
     ],
 
     synchronize: false,

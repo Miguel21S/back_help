@@ -1,6 +1,8 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Users } from "./Users.model";
 import { Permission } from "./Permission.model";
+import { Role_permission } from "./Role_permissions.model";
+import { User_role } from "./User_roles.model";
 // import { permission } from "process";
 
 
@@ -13,9 +15,21 @@ export class Roles extends BaseEntity{
     @Column({"name": "name"})
     name!: string;
 
-    @OneToMany(() => Users, (users) => users.role_id)
-    users!: Users[];
+    @Column({ "name": "description" })
+    description!: string;
 
-    @OneToMany(()=> Permission, (permission)=> permission.role_id)
-    permission!: Permission[];
+    @CreateDateColumn({ name: "created_date", type: "timestamp"})
+    created_date!: Date;
+
+    @UpdateDateColumn({ "name": "date_updated", type: "timestamp"})
+    date_updated!: Date;
+
+    @OneToMany(() => User_role, (user_role) => user_role.role_id)
+    user_roles!: User_role[];
+
+    @OneToMany(() => Role_permission, (role_permission) => role_permission.role_id)
+    role_permissions!: Role_permission[];
+    
+    // @OneToMany(()=> Permission, (permission)=> permission.role_id)
+    // permission!: Permission[];
 }
