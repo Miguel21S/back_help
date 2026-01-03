@@ -87,6 +87,11 @@ export class Users1762634123551 implements MigrationInterface {
                             default: true
                         },
                         {
+                            name: "deletedAt",
+                            type: "timestamp",
+                            isNullable: true
+                        },
+                        {
                             name: "last_login",
                             type: "timestamp",
                             onUpdate: 'CURRENT_TIMESTAMP',

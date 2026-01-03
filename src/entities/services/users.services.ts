@@ -9,15 +9,14 @@ import bcrypt from 'bcryptjs'
 import { AppDataSource } from "../../core/database/db";
 import { Roles } from "../models/Roles.model";
 import { validEmail, validPassword } from "../reusableComponents/reusableComponents";
+import { User_role } from "../models/User_roles.model";
+import { Permission } from "../models/Permission.model";
+import { User_permission } from "../models/user_permission";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
 const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const roleName = req.tokenData.roleName;
-
-        if (roleName !== "superAdmin" && roleName !== "admin") { throw new authorizationError("Unauthorized access") }
-
         const users = await Users.find({
             select: {
                 id: true,
@@ -36,7 +35,6 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
                 date_entry_apartment: true,
                 created_date: true,
                 building_id: true,
-                role_id: true,
                 last_login: true
             },
         });
@@ -67,22 +65,20 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 ////////////////////  UPDATE USER BY ID
 const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleId, roleName } = req.tokenData;
-        const user_id = req.params.id;
+        const { roleId } = req.tokenData;
+        const user_id = Number(req.params.id);
         const {
             name, lastName, email, phone, date_born, gender, nationality,
             building_id, special_situation, date_entry_apartment,
             type_document, number_document
         } = req.body;
 
-        if (isNaN(parseInt(user_id))) { throw new badRequestError("Invalid user ID") }
+        if (isNaN(user_id)) { throw new badRequestError("Invalid user ID") }
 
-        const user = await Users.findOne({ where: { id: parseInt(user_id) } });
+        const user = await Users.findOne({ where: { id: user_id } });
         if (!user) { throw new notFoundError('User not found') }
 
-        if (user.id !== roleId && roleName !== 'superAdmin') { throw new authorizationError("Unauthorized access") }
-
-        if(validEmail(email)){ throw new badRequestError("Envalid email")}
+        if (validEmail(email)) { throw new badRequestError("Envalid email") }
 
         if (email) {
             const existEmail = await Users.findOne({
@@ -123,7 +119,7 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
             if (!buildingExists) throw new notFoundError("Building id not found");
         }
 
-        const upd = await Users.createQueryBuilder()
+        await Users.createQueryBuilder()
             .update(Users)
             .set(fieldsToUpdate)
             .where("id = :id", { id: user_id })
@@ -142,8 +138,8 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         //         phone,
         //         email,
         //         date_entry_apartment,
-        // type_document,
-        //     number_document
+        //         type_document,
+        //         number_document
         //     }
         // )
 
@@ -160,16 +156,13 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
 ////////////////////  GET USER BY ID 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleName } = req.tokenData;
-        const user_id = req.params.id;
+        const user_id = Number(req.params.id);
 
-        if (roleName !== 'superAdmin') { throw new authorizationError("Unauthorized access") }
-
-        if (isNaN(Number(user_id)) || Number(user_id) !== parseInt(user_id)) { throw new badRequestError("Invalid user ID") }
+        if (isNaN(user_id) || user_id !== parseInt(user_id.toString())) { throw new badRequestError("Invalid user ID") }
 
         const user = await Users.findOne({
             where: {
-                id: parseInt(user_id)
+                id: user_id
             },
             select: {
                 id: true,
@@ -206,33 +199,40 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 ////////////////////  DELETE USER BY ID
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleId, roleName } = req.tokenData;
-        const user_id = req.params.id;
+        const { roleId } = req.tokenData;
+        const user_id = Number(req.params.id);
 
-        if (roleName !== 'superAdmin') { throw new authorizationError('Unauthorized access') }
+        if (isNaN(user_id)) { throw new badRequestError("Invalid user ID") }
 
-        if (isNaN(Number(user_id)) || Number(user_id) !== parseInt(user_id)) { throw new badRequestError("Invalid user ID") }
+        if (user_id === roleId) { throw new authorizationError("You cannot delete your own account"); }
 
-        const user = await Users.findOne({
-            where: {
-                id: parseInt(user_id)
-            },
-            select:
-                ["id", "role_id"]
-        });
+        const user = await Users.findOne({ where: { id: user_id } });
+        if (!user) { throw new notFoundError("User not found"); }
 
-        if (!user) { throw new notFoundError("User not found") }
+        const isSuperAdmin = await AppDataSource
+            .getRepository(User_role)
+            .createQueryBuilder()
+            .innerJoin("roles", "role", "role.id = role_id")
+            .where("user_id = :userId", { userId: user_id })
+            .andWhere("role.name = :roleName", { roleName: "superAdmin" })
+            .getOne();
 
-        if (user.id === roleId || user.role_id === 1) {
+
+        if (isSuperAdmin) {
             throw new authorizationError("superAdministrators cannot delete themselves or other superAdministrators")
         }
 
-        const removeUser: any = await Users.delete(user?.id);
+        // const removeUser: any = await Users.delete({ id: user_id });
+        await Users.update(
+            user_id,
+            {
+                isActive: false,
+                deletedAt: new Date()
+            })
 
         res.status(200).json({
             success: true,
             message: "User deleted successfully",
-            data: removeUser,
         })
     } catch (error) {
         next(error);
@@ -248,11 +248,15 @@ export const inactiveActivateUsers = async () => {
             .set({ isActive: false })
             // .where("last_login < NOW() - INTERVAL :minutes MINUTE", { minutes })
             .where("last_login IS NOT NULL")
-            .andWhere("role_id != :adminRole", { adminRole: 1 })
+            // .andWhere("role_id != :adminRole", { adminRole: 1 }) en esta
             .andWhere("last_login < NOW() - INTERVAL 90 DAY")
+            .andWhere(`id NOT IN (
+                SELECT ur.user_id
+                FROM user_roles ur
+                WHERE ur.role_id IN (:...roles))`)
+            .setParameter("roles", [1, 2])
             .execute();
 
-        // console.log("Usuarios inactivos actualizados correctamente");
     } catch (error) {
         console.error("Error al desactivar usuarios inactivos", error);
     }
@@ -305,10 +309,6 @@ const CheckEmailUser = async (req: Request, res: Response, next: NextFunction) =
 ///////////////////      GET THE TOTAL NUMBER OF USERS IN THE SYSTEM
 const dashboardUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const roleName = req.tokenData.roleName;
-
-        if (roleName !== 'superAdmin') { throw new authorizationError("Unauthorized access") }
-
         const AGE_CASE = `
             CASE
                 WHEN users.date_born IS NULL THEN 'SIN FECHA'
@@ -330,10 +330,11 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
             .getRawMany();
         console.log("Count gender:", userGenderCount);
 
-        const totalUsersForRol = await Users.createQueryBuilder("users")
-            .leftJoin("users.role", "role")
+        const totalUsersForRol = await Roles
+            .createQueryBuilder("role")
+            .leftJoin("role.user_roles", "u_role")
             .select("role.name", "roleName")
-            .addSelect("COUNT(users.id)", "count")
+            .addSelect("COUNT(DISTINCT u_role.user_id)", "count")
             .groupBy("role.name")
             .getRawMany();
         console.log("Total users for rol:", totalUsersForRol);
@@ -408,7 +409,7 @@ const dashboardUsers = async (req: Request, res: Response, next: NextFunction) =
 }
 
 ////////////////////     GET MY PROFILE
-const getPrifile = async (req: Request, res: Response, next: NextFunction) => {
+const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user_id = req.tokenData.roleId;
 
@@ -477,14 +478,11 @@ const getMyAllImage = async (req: Request, res: Response, next: NextFunction) =>
 ////////////////////     UPDATE PASSWORD
 const changePassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleId, roleName } = req.tokenData;
         const { password, newPassword } = req.body;
-        const id = req.params.id;
+        const id = Number(req.params.id);
 
-        const user = await Users.findOne({ where: { id: parseInt(id) } })
+        const user = await Users.findOne({ where: { id: id } })
         if (!user?.id) { throw new notFoundError("User not found") }
-
-        if (roleId !== user?.id && roleName !== "superAdmin" && roleName !== "admin") { throw new authorizationError('Unauthorized access') }
 
         if (password !== newPassword) { throw new badRequestError("Passwords do not match") }
 
@@ -498,7 +496,7 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
 
         await Users.update(id,
             {
-                id: parseInt(id),
+                id: id,
                 password: passwordEcrypted
             }
         )
@@ -514,11 +512,9 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
 
 ////////////////////     CHANGE TO ROLE
 const changeRole = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { roleName } = req.tokenData
-        const { email, nameRole } = req.body
 
-        if (roleName !== 'superAdmin' && roleName !== 'admin') { throw new authorizationError('Unauthorized access') }
+    try {
+        const { email, nameRole } = req.body
 
         const user = await Users.findOne({ where: { email: email } })
         if (!user) { throw new notFoundError('User not found') }
@@ -526,11 +522,10 @@ const changeRole = async (req: Request, res: Response, next: NextFunction) => {
         const role = await Roles.findOne({ where: { name: nameRole } });
         if (!role) throw new notFoundError('Role not found');
 
-        const updateRole = await Users.update(
-            { email },
+        const updateRole = await User_role.update(
+            { id: user?.id },
             {
-                email: email,
-                role_id: role?.id
+                role_id: role?.id,
             }
         );
 
@@ -544,8 +539,33 @@ const changeRole = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const asignPermissionInUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, permission } = req.body;
+
+        const user = await Users.findOne({ where: { email: email } });
+        if (!user) { throw new notFoundError("User not found") }
+
+        const findPermission = await Permission.findOne({ where: { name: permission } });
+        if (!findPermission) { throw new notFoundError("Permission not found") }
+
+        const userPermissions = await User_permission.create({
+            user_id: user?.id,
+            permission_id: findPermission?.id
+        }).save()
+
+        res.status(200).json({
+            success: true,
+            message: "Permission assigned successfully",
+            data: userPermissions
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 export {
-    getUsers, getPrifile, getUserById, deleteUser, updateUsers,
+    getUsers, getProfile, getUserById, deleteUser, updateUsers,
     compareEmail, CheckEmailUser, dashboardUsers, getMyAllImage,
-    changePassword, changeRole
+    changePassword, changeRole, asignPermissionInUser
 };

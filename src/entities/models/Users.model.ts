@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, On
 import { Buildings } from "./Buildings.model";
 import { Teacher } from "./Teachers.model";
 import { User_role } from "./User_roles.model";
+import { User_permission } from "./user_permission";
 
 
 @Entity("users")
@@ -46,13 +47,16 @@ export class Users extends BaseEntity {
     @Column({ 'name': 'isActive' })
     isActive?: boolean;
 
+    @Column({ type: "timestamp", nullable: true })
+    deletedAt?: Date | null;
+
     @Column({ type: "timestamp", onUpdate: 'CURRENT_TIMESTAMP', nullable: true })
     last_login?: Date;
 
     @Column({ 'name': 'date_entry_apartment' })
     date_entry_apartment!: Date;
 
-    @CreateDateColumn({ name: "created_date", type: "timestamp"})
+    @CreateDateColumn({ name: "created_date", type: "timestamp" })
     created_date!: Date;
 
     @Column({ 'name': 'password' })
@@ -68,6 +72,9 @@ export class Users extends BaseEntity {
     @OneToMany(() => User_role, (user_role) => user_role.user_id)
     user_roles!: User_role[];
 
-    @OneToMany(()=> Teacher, (teacher) => teacher.user)
+    @OneToMany(() => Teacher, (teacher) => teacher.user)
     teachers!: Teacher[];
+
+    @OneToMany(() => User_permission, user_p => user_p.user)
+    user_permissions!: User_permission[];
 }

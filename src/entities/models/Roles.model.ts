@@ -24,10 +24,10 @@ export class Roles extends BaseEntity{
     @UpdateDateColumn({ "name": "date_updated", type: "timestamp"})
     date_updated!: Date;
 
-    @OneToMany(() => User_role, (user_role) => user_role.role_id)
+    @OneToMany(() => User_role, (user_role) => user_role.role)
     user_roles!: User_role[];
 
-    @OneToMany(() => Role_permission, (role_permission) => role_permission.role_id)
+    @OneToMany(() => Role_permission, (role_permission) => role_permission.role)
     role_permissions!: Role_permission[];
     
     // @OneToMany(()=> Permission, (permission)=> permission.role_id)

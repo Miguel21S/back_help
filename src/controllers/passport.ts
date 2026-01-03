@@ -26,7 +26,7 @@ passport.use(new GoogleStrategy({
                 email: profile.emails[0].value,
                 gender: 'Not Specified',
                 password: 'GOOGLE_AUTH',
-                role: { id: 2 }
+                // role: { id: 2 }
             }).save();
 
             return done(null, newUser);

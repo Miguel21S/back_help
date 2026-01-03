@@ -8,16 +8,10 @@ import { createBuildingPDF } from "../../reports/genereteBuildPDF/genereteBuildi
 
 const createBuilding = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const { roleName } = req.tokenData;
-
-        if (
-            roleName !== "superAdmin" && roleName !== "admin" &&
-            roleName !== "AdminLocal" /* && roleName !== "moderator" */
-        ) throw new authorizationError("Unauthorized access")
-
         if (!req.body || Object.keys(req.body).length === 0) {
             throw new badRequestError("El body está vacío");
         }
+
         const colp = ["address_2", "last_maintenance", "services_available"];
         const requiredFields = [
             "address_1", "country", "province", "city", "postal_code",
@@ -188,17 +182,11 @@ const getBuildingById = async (req: Request, res: Response, next: NextFunction) 
 /////////////////////   METHOD THAT UPDATE THE BUILDING BY ID
 const updateBuildingById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleName } = req.tokenData
         const building_id = req.params.id;
         const {
             address_1, address_2, country, province, city, postal_code, quantity_apartment,
             floor_number, build_type, last_maintenance, general_status, services_available
         } = req.body;
-
-        if (
-            roleName !== "superAdmin" && roleName !== "admin" &&
-            roleName !== "AdminLocal" /* && roleName !== "moderator" */
-        ) throw new authorizationError("Unauthorized access")
 
         if (isNaN(Number(building_id)) || Number(building_id) !== parseInt(building_id)) { throw new badRequestError("Invalid building ID") }
 
@@ -253,13 +241,7 @@ const updateBuildingById = async (req: Request, res: Response, next: NextFunctio
 /////////////////////   METHOD THAT DELETE THE BUILDING BY ID
 const deleteBuildingById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleName } = req.tokenData
         const building_id = req.params.id;
-
-        if (
-            roleName !== "superAdmin" && roleName !== "admin" &&
-            roleName !== "AdminLocal"/*  && roleName !== "moderator" */
-        ) throw new authorizationError("Unauthorized access")
 
         if (isNaN(Number(building_id)) || Number(building_id) !== parseInt(building_id)) { throw new badRequestError("Invalid building ID") }
 
@@ -281,13 +263,7 @@ const deleteBuildingById = async (req: Request, res: Response, next: NextFunctio
 /////////////////////   METHODS FOR FILTERING BUILDING ELEMENTS BY ID
 const getfilterElementInBuilding = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleName } = req.tokenData;
         const building_id = Number(req.params.id);
-
-        if (
-            roleName !== "superAdmin" && roleName !== "admin" &&
-            roleName !== "AdminLocal" /* && roleName !== "moderator" */
-        ) throw new authorizationError("Unauthorized access")
 
         if (isNaN(building_id)) { throw new badRequestError("Invalid building ID") }
 
@@ -382,9 +358,6 @@ const getfilterElementInBuilding = async (req: Request, res: Response, next: Nex
 
 const dashboardBuildig = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { roleName } = req.tokenData;
-
-        if (roleName !== "superAdmin") { throw new authorizationError("Unauthorized access") }
 
         const [
             totalBuilding,

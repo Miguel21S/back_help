@@ -6,9 +6,23 @@ import { Users } from "../../../entities/models/Users.model";
 
 export const seederRoles = async () => {
     const roles = [
-        { name: "super_admin", description: "Control total del sistema" },
+        /* Roles de sistema */        
+        { name: "superAdmin", description: "Control total del sistema" },
         { name: "admin", description: "Administrador del sistema" },
         { name: "user", description: "Usuario estándar" },
+        
+        /* Roles académicos base */
+        { name: "student", description: "Estudiante regular" },
+        { name: "teacher", description: "Docente" },
+        
+        /* Roles académicos funcionales */
+        { name: "class_leader", description: "Jefe de turma / representante de clase" },
+        { name: "academic_coordinator", description: "Coordinador académico" },
+        { name: "faculty_manager", description: "Gestor de facultad" },
+        { name: "dean", description: "Decano de facultad" },
+
+        /* Roles administrativos Roles de apoyo académico */
+        { name: "student_services", description: "Servicio de apoyo al alumnado" },
     ];
     for (const roleData of roles) {
         const exists = await Roles.findOne({ where: { name: roleData.name } });
@@ -21,14 +35,16 @@ export const seederRoles = async () => {
 
 export const seederPermissions = async () => {
     const permissions = [
-        { name: "gestionar_usuarios", description: "Crear, editar y eliminar usuarios" },
-        { name: "gestionar_facultades", description: "Administrar facultades" },
-        { name: "ver_reportes", description: "Acceder a reportes del sistema" },
-        { name: "coordinar_zona", description: "Coordinar zonas académicas" },
-        { name: "orientar_estudiantes", description: "Orientar a estudiantes" },
-        { name: "decanato_gestion", description: "Funciones del decano" },
-        { name: "asignar_horarios", description: "Asignar horarios académicos" },
-        { name: "aprobar_documentos", description: "Aprobar documentos oficiales" },
+        { name: "manage_users", description: "Crear, editar y eliminar usuarios" },
+        { name: "manage_faculties", description: "Administrar facultades" },
+        { name: "view_reports", description: "Acceder a reportes del sistema" },
+        { name: "coordinate_zone", description: "Coordinar zonas académicas" },
+        { name: "orient_students", description: "Orientar a estudiantes" },
+        { name: "dean_management", description: "Funciones del decanato" },
+        { name: "assign_schedules", description: "Asignar horarios académicos" },
+        { name: "approve_documents", description: "Aprobar documentos oficiales" },
+        { name: "manage_schedules", description: "Gestión avanzada de horarios" },
+
     ];
 
     for (const perm of permissions) {
@@ -41,20 +57,28 @@ export const seederPermissions = async () => {
 
 export const seederPermissionsRoles = async () => {
     const roleMap = {
-        super_admin: [
-            "gestionar_usuarios",
-            "gestionar_facultades",
-            "ver_reportes",
-            "coordinar_zona",
-            "orientar_estudiantes",
-            "decanato_gestion",
-            "asignar_horarios",
-            "aprobar_documentos",
+        superAdmin: [
+            "manage_users",
+            "manage_faculties",
+            "view_reports", 
+            "coordinate_zone",
+            "orient_students",
+            "dean_management",
+            "assign_schedules",
+            "approve_documents",
+            "manage_schedules",
         ],
         admin: [
-            "gestionar_usuarios",
-            "gestionar_facultades",
-            "ver_reportes",
+            "manage_users",
+            "manage_faculties",
+            "view_reports",
+        ],
+        student: [
+            "view_reports",
+        ],
+        teacher: [
+            "assign_schedules",
+            "approve_documents",
         ],
         user: [],
     };
@@ -87,7 +111,7 @@ export const seederPermissionsRoles = async () => {
 }
 
 export const seederUserRoles = async () => {
-    const superAdminRole = await Roles.findOne({ where: { name: "super_admin" } });
+    const superAdminRole = await Roles.findOne({ where: { name: "superAdmin" } });
     const userRole = await Roles.findOne({ where: { name: "user" } });
 
     if (!superAdminRole || !userRole) return;

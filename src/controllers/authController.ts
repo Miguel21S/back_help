@@ -2,8 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 import { Users } from "../entities/models/Users.model";
-import { badRequestError, conflictError, notFoundError } from "../core/utils/errorsStatusCodes";
+import { authorizationError, badRequestError, conflictError, notFoundError } from "../core/utils/errorsStatusCodes";
 import { validEmail, validPassword } from "../entities/reusableComponents/reusableComponents";
+import { Roles } from "../entities/models/Roles.model";
+import { User_role } from "../entities/models/User_roles.model";
+import { Role_permission } from "../entities/models/Role_permissions.model";
+import { AppDataSource } from "../core/database/db";
+import { User_permission } from "../entities/models/user_permission";
 
 ///////////////////////////// METHOD REGISTER //////////////////////////
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +27,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         if (!validPassword(password)) {
             throw new notFoundError('Password must include at least one digit, one special character, one uppercase letter, one lowercase letter, and no spaces.')
         }
-    
+
         if (!validEmail(email)) { throw new badRequestError('Invalid email format') }
 
         const user = await Users.findOne({ where: { email } });
@@ -47,18 +52,27 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             genderFormatted = 'FEMALE';
         }
 
-        await Users.create(
+        const userRegister = await Users.create(
             {
                 name,
                 lastName,
                 email,
                 gender: genderFormatted,
                 password: passwordEcrypted,
-                role: {
-                    id: 6
-                }
+                // role: {
+                //     id: 3
+                // }
             }
         ).save();
+
+        const role = await Roles.findOne({ where: { name: "user" } });
+
+        await User_role.save(
+            User_role.create({
+                user_id: userRegister!.id,
+                role_id: role!.id
+            })
+        )
 
         res.status(200).json({
             success: true,
@@ -68,7 +82,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 }
-
 
 ///////////////////////////// METHOD LOGIN //////////////////////////
 const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -82,9 +95,9 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             where: {
                 email: email
             },
-            relations: {
-                role: true
-            },
+            // relations: {
+            //     role: true
+            // },
             select: {
                 id: true,
                 name: true,
@@ -100,25 +113,61 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         if (!validPassword) { throw new badRequestError('Invalid email or password') }
 
         if (!user?.isActive) {
-            return res.status(403).json({
-                success: false,
-                message: 'Tu cuenta está desactivada. Contacta al soporte.'
-            });
+            /*  return res.status(403).json({
+                 success: false,
+                 message: 'Tu cuenta está desactivada. Contacta al soporte.'
+             }); */
+            throw new authorizationError('Your account is deactivated. Contact support.')
         }
 
+        const findUserInRole = await User_role.findOne({
+            where: {
+                user_id: user.id,
+            }
+        });
+
+        const role = await Roles.findOne({
+            where: {
+                id: findUserInRole?.role_id
+            }
+        });
+
+        const rolePermissions = await AppDataSource
+            .getRepository(Role_permission)
+            .createQueryBuilder("rp")
+            .innerJoin("permission", "p", "p.id = rp.permission_id")
+            .where("rp.role_id = :roleId", { roleId: role!.id })
+            .select("p.name", "name")
+            .getRawMany();
+
+        const userPermissions = await AppDataSource
+            .getRepository(User_permission)
+            .createQueryBuilder("up")
+            .innerJoin("permission", "p", "p.id = up.permission_id")
+            .where("up.user_id = :userId", { userId: user.id })
+            .select("p.name", "name")
+            .getRawMany()
+
         const token = Jwt.sign(
+            // {
+            //     userId: user.id,
+            //     user: user?.name,
+            //     roleId: user?.role.id,
+            //     roleName: user?.role.name,
+            // },
             {
                 userId: user.id,
                 user: user?.name,
-                roleId: user.role.id,
-                roleName: user?.role.name,
+                roleId: role?.id,
+                roleName: role?.name,
+                permissions: rolePermissions.map(p => p.name),
+                userPermissions: userPermissions.map(p => p.name)
             },
             process.env.JWT_SECRET as string,
             {
                 expiresIn: '5h'
             }
         )
-
         await Users.update(user?.id, { last_login: new Date() })
 
         res.status(200).json({
