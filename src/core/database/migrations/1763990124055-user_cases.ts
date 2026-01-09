@@ -64,6 +64,7 @@ export class UserCases1763990124055 implements MigrationInterface {
                 ],
                 uniques: [
                     {
+                        name: "UQ_user_cases",
                         columnNames: ["user_id", /* "case_id" */]
                     }
                 ]

@@ -50,6 +50,13 @@ export class Programs1766934920847 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: "state",
+                        type: "enum",
+                        enum: ['ACTIVE', 'INACTIVE', 'GRADUATED', 'SUPENDED'],
+                        default:  "'ACTIVE'",
+                        isNullable: false
+                    },
+                    {
                         name: "created_date",
                         type: "timestamp",
                         default: "CURRENT_TIMESTAMP",
@@ -61,12 +68,15 @@ export class Programs1766934920847 implements MigrationInterface {
                         isNullable: false,
                     },
                 ],
+                uniques: [{
+                    columnNames: ["name", "degree", "faculty_id"]
+                }],
                 foreignKeys: [
                     {
                         columnNames: ['faculty_id'],
                         referencedTableName: 'faculties',
                         referencedColumnNames: ['id'],
-                        onDelete: 'CASCADE'
+                        onDelete: 'RESTRICT'
                     }
                 ]
             })

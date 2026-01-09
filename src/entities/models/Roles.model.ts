@@ -12,16 +12,16 @@ export class Roles extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({"name": "name"})
+    @Column({name: 'name'})
     name!: string;
 
-    @Column({ "name": "description" })
+    @Column({ name: "description" })
     description!: string;
 
     @CreateDateColumn({ name: "created_date", type: "timestamp"})
     created_date!: Date;
 
-    @UpdateDateColumn({ "name": "date_updated", type: "timestamp"})
+    @UpdateDateColumn({ name: "date_updated", type: "timestamp"})
     date_updated!: Date;
 
     @OneToMany(() => User_role, (user_role) => user_role.role)

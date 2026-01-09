@@ -7,31 +7,39 @@ export class Program extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ 'name': 'name' })
+    @Column({ name: 'name' })
     name!: string;
 
-    @Column({ 'name': 'degree' })
+    @Column({ name: 'degree' })
     degree!: string;
 
-    @Column({ 'name': 'duration' })
+    @Column({ name: 'duration' })
     duration!: number;
 
-    @Column({ 'name': 'total_credits' })
+    @Column({ name: 'total_credits' })
     total_credits!: number;
 
-    @Column({ 'name': 'modality' })
+    @Column({ name: 'modality' })
     modality!: string;
 
-    @Column({ 'name': 'coordinator' })
+    @Column({ name: 'coordinator' })
     coordinator!: string;
+
+    @Column({
+        name: "state",
+        type: "enum",
+        enum: ['ACTIVE', 'INACTIVE', 'GRADUATED', 'SUPENDED'],
+        default: 'ACTIVE'
+    })
+    state!: ['ACTIVE', 'INACTIVE', 'GRADUATED', 'SUPENDED'];
 
     @CreateDateColumn({ name: "created_date", type: "timestamp" })
     created_date!: Date;
 
-    @Column({ 'name': 'faculty_id' })
+    @Column({ name: 'faculty_id' })
     faculty_id!: number;
 
-    @ManyToOne(() => Faculty, (faculty) => faculty.programs)
+    @ManyToOne(() => Faculty, (faculty) => faculty.programs, {onDelete: 'RESTRICT'})
     @JoinColumn({ name: "faculty_id" })
     faculty!: Faculty;
 }

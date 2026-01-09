@@ -22,6 +22,12 @@ export class Institutions1766925750381 implements MigrationInterface {
                             isNullable: false,
                         },
                         {
+                            name: 'description',
+                            type: 'varchar',
+                            length: '500',
+                            isNullable: true,
+                        },
+                        {
                             name: 'type',
                             type: 'varchar',
                             length: '100',
@@ -67,7 +73,7 @@ export class Institutions1766925750381 implements MigrationInterface {
                             name: 'email',
                             type: 'varchar',
                             length: '100',
-                            isNullable: true,
+                            isNullable: false,
                         },
                         {
                             name: 'website',
@@ -76,12 +82,21 @@ export class Institutions1766925750381 implements MigrationInterface {
                             isNullable: true,
                         },
                         {
+                            name: "isActive",
+                            type: "boolean",
+                            default: true
+                        },
+                        {
                             name: "created_date",
                             type: "timestamp",
                             default: "CURRENT_TIMESTAMP",
                             isNullable: false
                         },
-                    ]
+                    ],
+                    uniques: [{
+                        name: "UQ_institution_address",
+                        columnNames: ["name", "country", "city", "email"]
+                    }]
                 }
             )
         )

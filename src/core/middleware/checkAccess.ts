@@ -1,6 +1,6 @@
 
 import { NextFunction, Request, Response } from "express";
-import { authorizationError } from "../utils/errorsStatusCodes";
+import { authorizationError } from "../utils/errorStatusCodes";
 
 export const checkAccess = (requiredPermission: string, allowedRoles: string[]=[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {

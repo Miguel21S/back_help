@@ -15,7 +15,7 @@ export const seederUsers = async () => {
             name: "Super",
             lastName: "Admin",
             date_born: new Date("1990-01-01"),
-            nationality: "Spain",
+            nationality: "Angola",
             gender: "Male".toUpperCase(),
             special_situation: "Bien",
             phone: "600000000",

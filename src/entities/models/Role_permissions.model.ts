@@ -7,10 +7,10 @@ export class Role_permission extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ "name": "role_id" })
+    @Column({ name: "role_id" })
     role_id!: number
 
-    @Column({ "name": "permission_id" })
+    @Column({ name: "permission_id" })
     permission_id!: number
 
     @ManyToOne(() => Roles, (role) => role.role_permissions)

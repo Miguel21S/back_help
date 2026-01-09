@@ -7,53 +7,53 @@ export class Buildings extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number
 
-    // @Column({ "name": "address" })
+    // @Column({ name: "address" })
     // address_line1!: string;
-    // @Column({ "name": "number_build" })
+    // @Column({ name: "number_build" })
     // number_build!: string;
 
-    @Column({ "name": "address_1" })
+    @Column({ name: "address_1" })
     address_1!: string;
 
-    @Column({ "name": "address_2" })
+    @Column({ name: "address_2" })
     address_2!: string;
 
 
-    @Column({ "name": "country" })
+    @Column({ name: "country" })
     country!: string;
 
-    @Column({ "name": "province" })
+    @Column({ name: "province" })
     province!: string;
 
-    @Column({ "name": "city" })
+    @Column({ name: "city" })
     city!: string;
 
-    @Column({ "name": "postal_code" })
+    @Column({ name: "postal_code" })
     postal_code!: string;
 
-    @Column({ "name": "build_type" })
+    @Column({ name: "build_type" })
     build_type!: string;
 
-    @Column({ "name": "last_maintenance" })
+    @Column({ name: "last_maintenance" })
     last_maintenance!: string;
 
-    // @Column({ "name": "admin_responsible" })
+    // @Column({ name: "admin_responsible" })
     // admin_responsible!: string;
 
-    @Column({ "name": "general_status" })
+    @Column({ name: "general_status" })
     general_status!: string;
 
-    @Column({ "name": "services_available" })
+    @Column({ name: "services_available" })
     services_available!: string;
 
-    // @Column({ "name": "photo" })
+    // @Column({ name: "photo" })
     // photo!: string;
 
-    @Column({ "name": "quantity_apartment" })
+    @Column({ name: "quantity_apartment" })
     quantity_apartment!: number;
 
 
-    @Column({ "name": "floor_number" })
+    @Column({ name: "floor_number" })
     floor_number!: string;
 
     @CreateDateColumn({ name: "created_date", type: "timestamp"})

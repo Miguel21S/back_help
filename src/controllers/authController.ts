@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 import { Users } from "../entities/models/Users.model";
-import { authorizationError, badRequestError, conflictError, notFoundError } from "../core/utils/errorsStatusCodes";
-import { validEmail, validPassword } from "../entities/reusableComponents/reusableComponents";
+import { authorizationError, badRequestError, conflictError, notFoundError } from "../core/utils/errorStatusCodes";
 import { Roles } from "../entities/models/Roles.model";
 import { User_role } from "../entities/models/User_roles.model";
 import { Role_permission } from "../entities/models/Role_permissions.model";
 import { AppDataSource } from "../core/database/db";
-import { User_permission } from "../entities/models/user_permission";
+import { User_permission } from "../entities/models/User_permission";
+import { ensureUnique, validEmail, validPassword } from "../entities/reusableComponents/validatedFunctions";
 
 ///////////////////////////// METHOD REGISTER //////////////////////////
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,10 +28,15 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             throw new notFoundError('Password must include at least one digit, one special character, one uppercase letter, one lowercase letter, and no spaces.')
         }
 
-        if (!validEmail(email)) { throw new badRequestError('Invalid email format') }
+        validEmail(email, 'Invalid email format')
 
-        const user = await Users.findOne({ where: { email } });
-        if (email === user?.email) { throw new conflictError('Email already exists') }
+        await ensureUnique(
+            Users,
+            {
+                email
+            },
+            'Email already exists'
+        )
 
         const passwordEcrypted = bcrypt.hashSync(password, 10);
 

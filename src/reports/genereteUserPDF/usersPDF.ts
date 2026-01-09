@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { createUsersPDF } from "./genereteUsersPDF"
-import { authorizationError, notFoundError } from "../../core/utils/errorsStatusCodes"
+import { authorizationError, notFoundError } from "../../core/utils/errorStatusCodes"
 import { Users } from "../../entities/models/Users.model"
 
 //////////////////       GENERETE PDF BY FILTER

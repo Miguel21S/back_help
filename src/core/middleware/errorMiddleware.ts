@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { appError } from '../utils/AppError';
-import { authenticationError, authorizationError, badRequestError, conflictError, informationalError, notFoundError } from '../utils/errorsStatusCodes';
+import { authenticationError, authorizationError, badRequestError, conflictError, informationalError, notFoundError } from '../utils/errorStatusCodes';
 
 export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
   let statusCode = 500;

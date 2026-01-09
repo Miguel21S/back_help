@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class Employees1766926301953 implements MigrationInterface {
+export class DepartmentsAcademics1767961580049 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table(
                 {
-                    name: "employees",
+                    name: "departments_academics",
                     columns: [
                         {
                             name: 'id',
@@ -16,10 +16,28 @@ export class Employees1766926301953 implements MigrationInterface {
                             generationStrategy: 'increment',
                         },
                         {
-                            name: 'category',
+                            name: 'name',
                             type: 'varchar',
                             length: '100',
                             isNullable: false,
+                        },
+                        {
+                            name: 'description',
+                            type: 'varchar',
+                            length: '500',
+                            isNullable: true,
+                        },
+                        {
+                            name: 'department_head',
+                            type: 'varchar',
+                            length: '100',
+                            isNullable: true,
+                        },
+                        {
+                            name: 'email',
+                            type: 'varchar',
+                            length: '100',
+                            isNullable: true,
                         },
                         {
                             name: "isActive",
@@ -33,50 +51,50 @@ export class Employees1766926301953 implements MigrationInterface {
                             isNullable: false
                         },
                         {
-                            name: "user_id",
-                            type: "int",
-                            isNullable: false
-                        },
-                        {
                             name: 'faculty_id',
                             type: 'int',
                             isNullable: false,
                         },
                         {
-                            name: 'dept_academic_id',
+                            name: 'institution_id',
                             type: 'int',
                             isNullable: false,
-                        }
+                        },
+                        // {
+                        //     name: 'employee_id',
+                        //     type: 'int',
+                        //     isNullable: false,
+                        // }
                     ],
                     uniques: [
                         {
-                            name: "UQ_employeed",
-                            columnNames: ["faculty_id", "department_id", "category", "user_id"]
+                            name: "UQ_department_name_faculty",
+                            columnNames: ["name", "faculty_id"]
                         },
                         {
-                            name: "UQ_employeed_user_id",
-                            columnNames: ["user_id"]
+                            name: "UQ_department_email",
+                            columnNames: ["email"]
                         }
                     ],
                     foreignKeys: [
                         {
-                            columnNames: ["user_id"],
-                            referencedTableName: "users",
-                            referencedColumnNames: ["id"],
-                            onDelete: "CASCADE"
-                        },
-                        {
                             columnNames: ['faculty_id'],
                             referencedTableName: 'faculties',
                             referencedColumnNames: ['id'],
-                            onDelete: 'RESTRICT',
+                            onDelete: 'RESTRICT'
                         },
                         {
-                            columnNames: ['dept_academic_id'],
-                            referencedTableName: 'departments_academics',
+                            columnNames: ['institution_id'],
+                            referencedTableName: 'institutions',
                             referencedColumnNames: ['id'],
-                            onDelete: 'RESTRICT',
-                        }
+                            onDelete: 'RESTRICT'
+                        },
+                        // {
+                        //     columnNames: ['employee_id'],
+                        //     referencedTableName: 'employees',
+                        //     referencedColumnNames: ['id'],
+                        //     onDelete: 'CASCADE'
+                        // }
                     ]
                 }
             )
@@ -84,7 +102,7 @@ export class Employees1766926301953 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("employees");
+        await queryRunner.dropTable("departments_academics")
     }
 
 }

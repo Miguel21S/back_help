@@ -2,7 +2,9 @@
 import { Router } from 'express';
 import routerController from './controllers/router';
 import routerUsers from './entities/routes/user.router';
-import routerBuildign from './entities/routes/buldings.router';
+import routerBuildings from './entities/routes/buldings.router';
+import routerInstitutions from './entities/routes/institutions.router';
+import routerDepartments from './entities/routes/departmentsAcademics.router';
 // import routerHousing from './entities/routes/housing.router';
 // import routerMascot from './entities/routes/mascots.router';
 // import routerCars from './entities/routes/cars.router';
@@ -20,8 +22,10 @@ const mainRouter = Router();
 mainRouter.use('/', routerController);
 mainRouter.use('/auth', googleAuthRoutes)
 mainRouter.use('/users', routerUsers);
-mainRouter.use('/buildings', routerBuildign);
+mainRouter.use('/buildings', routerBuildings);
 mainRouter.use('/pdfs', routerPDF);
+mainRouter.use('/institution', routerInstitutions);
+mainRouter.use('/departments', routerDepartments);
 // mainRouter.use('/housing', routerHousing);
 // mainRouter.use('/mascots', routerMascot);
 // mainRouter.use('/cars', routerCars);

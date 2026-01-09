@@ -8,17 +8,17 @@ export class User_role extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ "name": "user_id" })
+    @Column({ name: "user_id" })
     user_id!: number;
 
-    @Column({ "name": "role_id" })
+    @Column({ name: "role_id" })
     role_id!: number;
 
     @ManyToOne(() => Roles, (roles) => roles.user_roles)
-    @JoinColumn({ 'name': 'role_id' })
+    @JoinColumn({ name: 'role_id' })
     role!: Roles;
 
     @ManyToOne(() => Users, (users) => users.user_roles)
-    @JoinColumn({ 'name': 'user_id' })
+    @JoinColumn({ name: 'user_id' })
     user!: Users;
 }

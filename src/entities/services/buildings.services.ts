@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
+import { badRequestError, conflictError, notFoundError } from "../../core/utils/errorStatusCodes";
 import { Buildings } from "../models/Buildings.model";
 import { Not } from "typeorm";
 import { Users } from "../models/Users.model";
 import { AppDataSource } from "../../core/database/db";
 import { createBuildingPDF } from "../../reports/genereteBuildPDF/genereteBuildingsPDF";
 
+/////////////////////     METHOD FOR CREATING A BUILDING
 const createBuilding = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         if (!req.body || Object.keys(req.body).length === 0) {
@@ -397,11 +398,12 @@ const dashboardBuildig = async (req: Request, res: Response, next: NextFunction)
                 .getRawMany()
 
         ])
+        /* 
         console.log("Total building: ", totalBuilding)
         console.log("Total building by country: ", totalBuildingByCountry)
         console.log("totalBuildingsByCountryAndProvince: ", totalBuildingsByCountryAndProvince)
         console.log("totalBuildingsByCountryAndProvince: ", totalUsersBuildingsByCountryAndProvinceActive)
-
+ */
         res.status(200).json({
             success: true,
             mensage: "Buildings",

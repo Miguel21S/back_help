@@ -108,7 +108,6 @@ export class Buildings1762618117246 implements MigrationInterface {
                         {
                             name: "floor_number",
                             type: "int",
-                            length: "10",
                             isNullable: true
                         },
                         {
@@ -120,8 +119,8 @@ export class Buildings1762618117246 implements MigrationInterface {
                     ],
                     uniques: [
                         {
-                            name: "unique_building",
-                            columnNames: ["address_1", "postal_code", "city", "province"],
+                            name: "UQ_building_address",
+                            columnNames: ["address_1", "country", "province", "city", "postal_code"],
                         },
                     ],
                 }),

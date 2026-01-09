@@ -1,17 +1,17 @@
 
 import { NextFunction, Request, Response } from "express";
-import { Users } from "../models/Users.model";
-import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorsStatusCodes";
+import { Users } from "../../models/Users.model";
+import { authorizationError, badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { Not } from "typeorm";
-import { createUsersPDF } from "../../reports/genereteUserPDF/genereteUsersPDF";
-import { Buildings } from "../models/Buildings.model";
+import { createUsersPDF } from "../../../reports/genereteUserPDF/genereteUsersPDF";
+import { Buildings } from "../../models/Buildings.model";
 import bcrypt from 'bcryptjs'
-import { AppDataSource } from "../../core/database/db";
-import { Roles } from "../models/Roles.model";
-import { validEmail, validPassword } from "../reusableComponents/reusableComponents";
-import { User_role } from "../models/User_roles.model";
-import { Permission } from "../models/Permission.model";
-import { User_permission } from "../models/user_permission";
+import { AppDataSource } from "../../../core/database/db";
+import { Roles } from "../../models/Roles.model";
+import { User_role } from "../../models/User_roles.model";
+import { Permission } from "../../models/Permission.model";
+import { User_permission } from "../../models/User_permission";
+import { validEmail, validPassword } from "../../reusableComponents/validatedFunctions";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
@@ -78,12 +78,15 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         const user = await Users.findOne({ where: { id: user_id } });
         if (!user) { throw new notFoundError('User not found') }
 
-        if (validEmail(email)) { throw new badRequestError("Envalid email") }
+        const normalizedEmail = email.toLowerCase().trim()
+        // if (validEmail(normalizedEmail)) { throw new badRequestError("Envalid email") }
+        validEmail(email, "Envalid email")
+
 
         if (email) {
             const existEmail = await Users.findOne({
                 where: {
-                    email: email,
+                    email: normalizedEmail,
                     id: Not(user.id)
                 }
             });
@@ -96,7 +99,7 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         let fieldsToUpdate: any = {
             name,
             lastName,
-            email,
+            email: normalizedEmail,
             phone,
             date_born,
             gender,
@@ -217,7 +220,6 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
             .andWhere("role.name = :roleName", { roleName: "superAdmin" })
             .getOne();
 
-
         if (isSuperAdmin) {
             throw new authorizationError("superAdministrators cannot delete themselves or other superAdministrators")
         }
@@ -268,7 +270,12 @@ const compareEmail = async (req: Request, res: Response, next: NextFunction): Pr
     try {
         const email = req.query.email as string;
 
-        const userEmail = await Users.findOne({ where: { email } });
+        const normalizedEmail = email.toLowerCase().trim()
+        // if (validEmail(normalizedEmail)) { throw new badRequestError("Envalid email") }
+        validEmail(email, "Envalid email")
+
+
+        const userEmail = await Users.findOne({ where: { email: normalizedEmail } });
 
         if (userEmail) {
             res.status(200).json({ success: true, exists: true, message: "Email ya registrado" });
@@ -516,7 +523,12 @@ const changeRole = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, nameRole } = req.body
 
-        const user = await Users.findOne({ where: { email: email } })
+        const normalizedEmail = email.toLowerCase().trim()
+        // if (validEmail(normalizedEmail)) { throw new badRequestError("Envalid email") }
+        validEmail(email, "Envalid email")
+
+
+        const user = await Users.findOne({ where: { email: normalizedEmail } })
         if (!user) { throw new notFoundError('User not found') }
 
         const role = await Roles.findOne({ where: { name: nameRole } });
@@ -543,16 +555,20 @@ const asignPermissionInUser = async (req: Request, res: Response, next: NextFunc
     try {
         const { email, permission } = req.body;
 
-        const user = await Users.findOne({ where: { email: email } });
+         const normalizedEmail = email.toLowerCase().trim()
+        // if (validEmail(normalizedEmail)) { throw new badRequestError("Envalid email") }
+        validEmail(email, "Envalid email")
+
+        const user = await Users.findOne({ where: { email: normalizedEmail } });
         if (!user) { throw new notFoundError("User not found") }
 
         const findPermission = await Permission.findOne({ where: { name: permission } });
         if (!findPermission) { throw new notFoundError("Permission not found") }
 
-        const userPermissions = await User_permission.create({
+        const userPermissions = await User_permission.save({
             user_id: user?.id,
             permission_id: findPermission?.id
-        }).save()
+        })
 
         res.status(200).json({
             success: true,

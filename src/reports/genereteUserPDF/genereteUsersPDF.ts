@@ -1,4 +1,4 @@
-import { formatIsActive } from "../../entities/reusableComponents/reusableComponents";
+import { formatIsActive } from "../../entities/reusableComponents/validatedFunctions";
 
 // import path from "path";
 const PdfPrinter = require("pdfmake/src/printer");

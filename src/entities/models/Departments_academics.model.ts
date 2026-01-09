@@ -4,36 +4,43 @@ import { Teacher } from "./Teachers.model";
 import { Institution } from "./Institutions.model";
 
 
-@Entity("departments")
-export class Department extends BaseEntity {
+@Entity("departments_academics")
+export class Departments_academics extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ 'name': 'name' })
+    @Column({ name: 'name' })
     name!: string;
 
-    @Column({ 'name': 'department_head' })
+    @Column({ name: 'description' })
+    description!: string;
+
+    @Column({ name: 'department_head' })
     department_head?: string;
 
-    @Column({ 'name': 'email' })
+    @Column({ name: 'email' })
     email?: string;
 
     @CreateDateColumn({ name: "created_date", type: "timestamp"})
     created_date!: Date;
 
-    @Column({ 'name': 'faculty_id' })
+    @Column({ name: 'institution_id' })
+    institution_id!: number;
+
+    @Column({ name: 'faculty_id' })
     faculty_id!: number;
 
-    @ManyToOne(() => Faculty, (faculty) => faculty.departments)
+    @ManyToOne(() => Faculty, (faculty) => faculty.departments_academics, {onDelete: 'RESTRICT'})
     @JoinColumn({ name: 'faculty_id' })
     faculty!: Faculty;
 
-    @ManyToOne(() => Institution, (institution) => institution.departments)
+    @ManyToOne(() => Institution, (institution) => institution.departments_academics, {onDelete: 'RESTRICT'})
+    @JoinColumn({name: 'institution_id'})
     institution!: Institution;
 
     // @OneToMany(() => Employee, (employee) => employee.department)
     // employees!: Employee[];
 
-    @OneToMany(() => Teacher, (teacher) => teacher.department)
+    @OneToMany(() => Teacher, (teacher) => teacher.departments_academics)
     teachers!: Teacher[];
 }

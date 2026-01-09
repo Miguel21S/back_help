@@ -1,12 +1,27 @@
 import { appError } from "./AppError";
 
 
+//////////////// STATUS CODE FOR SUCCESS RESPONSE
+// class successMessage extends appStatusCode {
+//   constructor(message: string, data: any) {
+//     super(message, data, 200);
+//   }
+// }
+
+// //////////////// STATUS CODE FOR CREATE SUCCESS RESPONSE
+// class createdMessage extends appStatusCode {
+//   constructor(message: string, data: any) {
+//     super(message, data, 201);
+//   }
+// }
+
 //////////////// STATUS CODE FOR UNAUTHORIZED RESPONSE
 class informationalError extends appError {
-  constructor(message: string) {
+  constructor(message: string, data: any) {
     super(message, 203);
   }
 }
+
 ////////////////  INVALID OR INCORRECTLY FORMATTED DATA
 class badRequestError extends appError {
   constructor(message: string) {

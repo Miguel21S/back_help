@@ -22,6 +22,12 @@ export class Faculties1766925853555 implements MigrationInterface {
                             isNullable: false,
                         },
                         {
+                            name: 'description',
+                            type: 'varchar',
+                            length: '500',
+                            isNullable: true,
+                        },
+                        {
                             name: 'dean',
                             type: 'varchar',
                             length: '100',
@@ -40,6 +46,11 @@ export class Faculties1766925853555 implements MigrationInterface {
                             isNullable: true,
                         },
                         {
+                            name: "isActive",
+                            type: "boolean",
+                            default: true
+                        },
+                        {
                             name: "created_date",
                             type: "timestamp",
                             default: "CURRENT_TIMESTAMP",
@@ -51,12 +62,22 @@ export class Faculties1766925853555 implements MigrationInterface {
                             isNullable: false,
                         }
                     ],
+                    uniques: [
+                        {
+                            name: "UQ_faculty_name_institution_id",
+                            columnNames: ["name", "institution_id"]
+                        },
+                        {
+                            name: "UQ_falculty_email",
+                            columnNames: ["email"]
+                        }
+                    ],
                     foreignKeys: [
                         {
                             columnNames: ['institution_id'],
                             referencedTableName: 'institutions',
                             referencedColumnNames: ['id'],
-                            onDelete: 'CASCADE',
+                            onDelete: 'RESTRICT',
                         }
                     ]
                 }

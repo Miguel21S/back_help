@@ -67,7 +67,8 @@ export class Cases1763988637996 implements MigrationInterface {
                     ],
                     uniques: [
                         {
-                            columnNames: ["zone_id", "name"]
+                            name: "UQ_case_zone",
+                            columnNames: ["name", "zone_id"]
                         }
                     ]
                 }
