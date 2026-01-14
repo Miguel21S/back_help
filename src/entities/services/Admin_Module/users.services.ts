@@ -11,7 +11,7 @@ import { Roles } from "../../models/Roles.model";
 import { User_role } from "../../models/User_roles.model";
 import { Permission } from "../../models/Permission.model";
 import { User_permission } from "../../models/User_permission";
-import { validEmail, validPassword } from "../../reusableComponents/validatedFunctions";
+import { ensureUnique, validEmail, validPassword } from "../../reusableComponents/validatedFunctions";
 // import { Imagens } from "../models/Imagens.models";
 
 ////////////////////  GET ALL USERS
@@ -78,23 +78,21 @@ const updateUsers = async (req: Request, res: Response, next: NextFunction) => {
         const user = await Users.findOne({ where: { id: user_id } });
         if (!user) { throw new notFoundError('User not found') }
 
-        const normalizedEmail = email.toLowerCase().trim()
+        // const normalizedEmail = email.toLowerCase().trim()
         // if (validEmail(normalizedEmail)) { throw new badRequestError("Envalid email") }
-        validEmail(email, "Envalid email")
 
+        const normalizedEmail = email !== undefined
+            ? validEmail(email, "Envalid email")
+            : user?.email
 
-        if (email) {
-            const existEmail = await Users.findOne({
-                where: {
-                    email: normalizedEmail,
-                    id: Not(user.id)
-                }
-            });
-
-            if (existEmail) {
-                throw new conflictError("This email already exists in the database");
-            }
-        }
+        await ensureUnique(
+            Users,
+            {
+                email: normalizedEmail ?? user?.email,
+                id: Not(user.id)
+            },
+            ("This email already exists in the database")
+        )
 
         let fieldsToUpdate: any = {
             name,
@@ -211,6 +209,10 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 
         const user = await Users.findOne({ where: { id: user_id } });
         if (!user) { throw new notFoundError("User not found"); }
+
+         if (!user.isActive) {
+            throw new badRequestError("User already deleted")
+        }
 
         const isSuperAdmin = await AppDataSource
             .getRepository(User_role)
@@ -555,7 +557,7 @@ const asignPermissionInUser = async (req: Request, res: Response, next: NextFunc
     try {
         const { email, permission } = req.body;
 
-         const normalizedEmail = email.toLowerCase().trim()
+        const normalizedEmail = email.toLowerCase().trim()
         // if (validEmail(normalizedEmail)) { throw new badRequestError("Envalid email") }
         validEmail(email, "Envalid email")
 

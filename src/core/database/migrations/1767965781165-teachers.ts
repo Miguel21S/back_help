@@ -33,6 +33,11 @@ export class Teachers1767965781165 implements MigrationInterface {
                             default: true
                         },
                         {
+                            name: "deletedAt",
+                            type: "timestamp",
+                            isNullable: true
+                        },
+                        {
                             name: "created_date",
                             type: "timestamp",
                             default: "CURRENT_TIMESTAMP",

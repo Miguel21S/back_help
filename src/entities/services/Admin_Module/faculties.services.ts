@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { Faculty } from "../../models/Faculty.model";
-import { authorizationError, badRequestError, notFoundError } from "../../../core/utils/errorStatusCodes";
+import { authorizationError, badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { Users } from "../../models/Users.model";
 import { Institution } from "../../models/Institutions.model";
 import { Not } from "typeorm";
-import { ensureUnique, validEmail } from "../../reusableComponents/validatedFunctions";
+import { ensureUnique, formatIsActive, parserIsActive, validEmail } from "../../reusableComponents/validatedFunctions";
 
 ///////////////////////   METHOD CREATE FACULTY
 const createFaculty = async (req: Request, res: Response, next: NextFunction) => {
@@ -14,10 +14,7 @@ const createFaculty = async (req: Request, res: Response, next: NextFunction) =>
         if (!name || !email_faculty || !email_user || !institution_id) {
             throw new badRequestError("Missing required fields")
         }
-        
-        // if (!validEmail(normalizedEmail)) { throw new badRequestError("Email of faculty is invaled") }
-        // if (!validEmail(email_user)) { throw new badRequestError("Email user is invaled") }
-        
+
         const normalizedEmail_faculty = validEmail(email_faculty, "Email of faculty is invaled")
         const normalizedEmail_user = validEmail(email_user, "Email user is invaled")
 
@@ -56,7 +53,10 @@ const createFaculty = async (req: Request, res: Response, next: NextFunction) =>
             message: "Faculty create successfully",
             data: faculty
         })
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === "ER_DUP_ENTRY") {
+            return next(new conflictError("A faculty with the same name, institution id, or email, already exists."))
+        }
         next(error)
     }
 }
@@ -91,7 +91,7 @@ const getListFaculties = async (req: Request, res: Response, next: NextFunction)
 const updateFacultyById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const faculty_id = Number(req.params.id)
-        const { name, description, dean, phone, email, institution_id } = req.body
+        const { name, description, dean, phone, email, institution_id, isActive } = req.body
 
         if (isNaN(faculty_id)) { throw new badRequestError("Invalid faculty id") }
 
@@ -103,15 +103,9 @@ const updateFacultyById = async (req: Request, res: Response, next: NextFunction
             if (!institution) throw new notFoundError("Institution not found")
         }
 
-        // const normalizedEmail = email.toLowerCase().trim()
-        // if (email !== undefined && !validEmail(normalizedEmail)) {
-        //     throw new badRequestError("Email invalid")
-        // }
-
         const normalizedEmail = email !== undefined
             ? validEmail(email, "Invalid email")
             : foundFaculty.email
-
 
         await ensureUnique(
             Faculty,
@@ -132,13 +126,19 @@ const updateFacultyById = async (req: Request, res: Response, next: NextFunction
             "The faculty already exists in the database"
         )
 
+        let active: boolean | undefined;
+        if (isActive !== undefined) {
+            active = parserIsActive(isActive)
+        }
+
         await Faculty.update(
-            faculty_id,
+            { id: faculty_id },
             {
                 name: name ?? foundFaculty?.name,
                 description: description ?? foundFaculty?.description,
                 dean: dean ?? foundFaculty?.dean,
                 phone: phone ?? foundFaculty?.phone,
+                isActive: active ?? foundFaculty?.isActive,
                 email: normalizedEmail ?? foundFaculty?.email,
                 institution_id: institution_id ?? foundFaculty?.institution_id
             }

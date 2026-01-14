@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { Faculty } from "../../models/Faculty.model";
-import { badRequestError, notFoundError } from "../../../core/utils/errorStatusCodes";
+import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { Departments_academics } from "../../models/Departments_academics.model";
-import { ensureUnique, validEmail } from "../../reusableComponents/validatedFunctions";
+import { ensureUnique, foundEntity, parserIsActive, validEmail } from "../../reusableComponents/validatedFunctions";
 import { Not } from "typeorm";
 import { Users } from "../../models/Users.model";
 
@@ -55,7 +55,10 @@ const createDepartment = async (req: Request, res: Response, next: NextFunction)
             success: true,
             message: "Department create successfully"
         })
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === "ER_DUP_ENTRY") {
+            return next(new conflictError("A department with the same name, or email, already exists."))
+        }
         next(error)
     }
 }
@@ -71,6 +74,7 @@ const getListDepartments = async (req: Request, res: Response, next: NextFunctio
                 description: true,
                 department_head: true,
                 email: true,
+                isActive: true,
                 faculty: {
                     name: true
                 },
@@ -95,7 +99,7 @@ const getListDepartments = async (req: Request, res: Response, next: NextFunctio
 const updateDepartment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const dept_id = Number(req.params.id)
-        const { name, description, department_head, email, faculty_id } = req.body
+        const { name, description, department_head, email, isActive, faculty_id } = req.body
 
         if (isNaN(dept_id)) { throw new badRequestError("Department id invalid") }
 
@@ -111,10 +115,7 @@ const updateDepartment = async (req: Request, res: Response, next: NextFunction)
                 throw new badRequestError("Faculty id invalid")
             }
 
-            const foundFaculty = await Faculty.findOne({ where: { id: fac_id } })
-            if (!foundFaculty) {
-                throw new notFoundError("Faculty not found")
-            }
+            const foundFaculty = await foundEntity<Faculty>(Faculty, { id: fac_id }, "Faculty not found")
 
             facultyId = fac_id
             institutionId = foundFaculty.institution_id
@@ -143,13 +144,19 @@ const updateDepartment = async (req: Request, res: Response, next: NextFunction)
             "The Department already exists in faculty"
         )
 
-        await Departments_academics.update(
+        let active: boolean | undefined;
+        if (isActive !== undefined && typeof(isActive) === 'string') {
+            active = parserIsActive(isActive)
+        }
+
+        const upDpto = await Departments_academics.update(
             dept_id,
             {
                 name: name ?? foundDepartment?.name,
                 description: description ?? foundDepartment?.description,
                 department_head: department_head ?? foundDepartment?.department_head,
                 email: normalizedEmail ?? foundDepartment?.email,
+                isActive: active ?? foundDepartment?.isActive,
                 faculty_id: facultyId,
                 institution_id: institutionId
             }
@@ -157,7 +164,7 @@ const updateDepartment = async (req: Request, res: Response, next: NextFunction)
 
         res.status(200).json({
             success: true,
-            message: "Department update successfully"
+            message: "Department update successfully",
         })
 
     } catch (error) {
@@ -166,14 +173,14 @@ const updateDepartment = async (req: Request, res: Response, next: NextFunction)
 }
 
 ///////////////////////   METHOD DELETE DEPARTMENT BY ID
-const deleteDepartmentById = async(req: Request, res: Response, next: NextFunction)=>{
+const deleteDepartmentById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const dept_id = Number(req.params.id)
 
-        if(isNaN(dept_id)){throw new badRequestError("Invalid department id")}
+        if (isNaN(dept_id)) { throw new badRequestError("Invalid department id") }
 
-        const foundDepartment = await Departments_academics.findOne({where: {id: dept_id}})
-        if(!foundDepartment){throw new notFoundError("Department not found")}
+        const foundDepartment = await Departments_academics.findOne({ where: { id: dept_id } })
+        if (!foundDepartment) { throw new notFoundError("Department not found") }
 
         await Departments_academics.remove(foundDepartment)
 

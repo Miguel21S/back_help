@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as dept from '../services/Admin_Module/DepartmentsAcademics';
+import * as dept from '../services/Admin_Module/departmentsAcademics';
 import { auth } from "../../core/middleware/auth";
 import { checkAccess } from "../../core/middleware/checkAccess";
 

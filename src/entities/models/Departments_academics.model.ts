@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
-import { Teacher } from "./Teachers.model";
+import { Teachers } from "./Teachers.model";
 import { Institution } from "./Institutions.model";
 
 
@@ -20,6 +20,9 @@ export class Departments_academics extends BaseEntity {
 
     @Column({ name: 'email' })
     email?: string;
+
+    @Column({name: 'isActive'})
+    isActive?: boolean
 
     @CreateDateColumn({ name: "created_date", type: "timestamp"})
     created_date!: Date;
@@ -41,6 +44,6 @@ export class Departments_academics extends BaseEntity {
     // @OneToMany(() => Employee, (employee) => employee.department)
     // employees!: Employee[];
 
-    @OneToMany(() => Teacher, (teacher) => teacher.departments_academics)
-    teachers!: Teacher[];
+    @OneToMany(() => Teachers, (teachers) => teachers.departments_academics)
+    teachers!: Teachers[];
 }

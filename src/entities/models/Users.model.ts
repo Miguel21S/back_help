@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Buildings } from "./Buildings.model";
-import { Teacher } from "./Teachers.model";
+import { Teachers } from "./Teachers.model";
 import { User_role } from "./User_roles.model";
 import { User_permission } from "./User_permission";
 
@@ -72,8 +72,8 @@ export class Users extends BaseEntity {
     @OneToMany(() => User_role, (user_role) => user_role.user_id)
     user_roles!: User_role[];
 
-    @OneToMany(() => Teacher, (teacher) => teacher.user)
-    teachers!: Teacher[];
+    @OneToMany(() => Teachers, (teachers) => teachers.user)
+    teachers!: Teachers[];
 
     @OneToMany(() => User_permission, user_p => user_p.user)
     user_permissions!: User_permission[];

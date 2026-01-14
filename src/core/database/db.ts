@@ -14,7 +14,7 @@ import { Buildings } from '../../entities/models/Buildings.model';
 import { Role_permission } from '../../entities/models/Role_permissions.model';
 import { User_role } from '../../entities/models/User_roles.model';
 import { UserRoles1767057541372 } from './migrations/1767057541372-user_roles';
-import { Teacher } from '../../entities/models/Teachers.model';
+import { Teachers } from '../../entities/models/Teachers.model';
 import { Institution } from '../../entities/models/Institutions.model';
 import { Faculty } from '../../entities/models/Faculty.model';
 import { Departments_academics } from '../../entities/models/Departments_academics.model';
@@ -38,7 +38,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE || "help_me_dev",
 
     entities: [Roles, Permission, Role_permission, User_role, Buildings, Users,
-        User_permission, Institution, Faculty, Departments_academics, Teacher, Program
+        User_permission, Institution, Faculty, Departments_academics, Teachers, Program
 
     ],
 

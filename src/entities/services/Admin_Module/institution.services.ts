@@ -43,7 +43,10 @@ const createInstitution = async (req: Request, res: Response, next: NextFunction
             message: 'Institution created with successfully',
         })
 
-    } catch (error) {
+    } catch (error: any) {
+        if(error.code === "ER_DUP_ENTRY") {
+            return next(new conflictError("A institution with the same name, address, country, province, and city, already exists."))
+        }
         next(error)
     }
 }
