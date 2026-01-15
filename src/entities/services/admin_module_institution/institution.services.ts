@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Institution } from "../../models/Institutions.model";
+import { Institution } from "../../models/admin_models_institution/Institutions.model";
 import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { Not } from "typeorm";
 import { ensureUnique, validEmail } from "../../reusableComponents/validatedFunctions";

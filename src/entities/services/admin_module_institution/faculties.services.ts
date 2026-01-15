@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { Faculty } from "../../models/Faculty.model";
+import { Faculty } from "../../models/admin_models_institution/Faculty.model";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
-import { Users } from "../../models/Users.model";
-import { Institution } from "../../models/Institutions.model";
+import { Users } from "../../models/roles_users_permission/Users.model";
+import { Institution } from "../../models/admin_models_institution/Institutions.model";
 import { Not } from "typeorm";
-import { ensureUnique, formatIsActive, parserIsActive, validEmail } from "../../reusableComponents/validatedFunctions";
+import { ensureUnique, parserIsActive, validEmail } from "../../reusableComponents/validatedFunctions";
 
 ///////////////////////   METHOD CREATE FACULTY
 const createFaculty = async (req: Request, res: Response, next: NextFunction) => {

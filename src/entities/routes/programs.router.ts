@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { auth } from "../../core/middleware/auth";
 import { checkAccess } from "../../core/middleware/checkAccess";
-import * as programs from '../services/Admin_Module/programs.services';
+import * as programs from '../services/admin_module_institution/programs.services';
 
 const router = Router()
 

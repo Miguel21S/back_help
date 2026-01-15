@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
-import { Teachers } from "./Teachers.model";
 import { Institution } from "./Institutions.model";
+import { Teachers } from "./Teachers.model";
 
 
 @Entity("departments_academics")

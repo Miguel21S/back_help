@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { Faculty } from "../../models/Faculty.model";
+import { Faculty } from "../../models/admin_models_institution/Faculty.model";
 import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
-import { Departments_academics } from "../../models/Departments_academics.model";
+import { Departments_academics } from "../../models/admin_models_institution/Departments_academics.model";
 import { ensureUnique, foundEntity, parserIsActive, validEmail } from "../../reusableComponents/validatedFunctions";
 import { Not } from "typeorm";
-import { Users } from "../../models/Users.model";
+import { Users } from "../../models/roles_users_permission/Users.model";
 
 ///////////////////////   METHOD CREATE DEPARTMENT
 const createDepartment = async (req: Request, res: Response, next: NextFunction) => {

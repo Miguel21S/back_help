@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { ensureUnique, foundEntity } from "../../reusableComponents/validatedFunctions";
-import { Faculty } from "../../models/Faculty.model";
-import { Program, ProgramState } from "../../models/Programs.model";
+import { Faculty } from "../../models/admin_models_institution/Faculty.model";
+import { Program, ProgramState } from "../../models/admin_models_institution/Programs.model";
 import { Not } from "typeorm";
 
 ///////////////////////   METHOD CREATE PROGRAM

@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Buildings } from "./Buildings.model";
-import { Teachers } from "./Teachers.model";
+import { Buildings } from "../Buildings.model";
+import { Teachers } from "../admin_models_institution/Teachers.model";
 import { User_role } from "./User_roles.model";
 import { User_permission } from "./User_permission";
 
