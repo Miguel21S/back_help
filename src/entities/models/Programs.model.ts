@@ -1,6 +1,12 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
 
+export enum ProgramState {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'INACTIVE',
+    GRADUATED = 'GRADUATED',
+    SUPENDED = 'SUPENDED'
+}
 
 @Entity("programs")
 export class Program extends BaseEntity {
@@ -28,10 +34,10 @@ export class Program extends BaseEntity {
     @Column({
         name: "state",
         type: "enum",
-        enum: ['ACTIVE', 'INACTIVE', 'GRADUATED', 'SUPENDED'],
-        default: 'ACTIVE'
+        enum: ProgramState,
+        default: ProgramState.ACTIVE
     })
-    state!: ['ACTIVE', 'INACTIVE', 'GRADUATED', 'SUPENDED'];
+    state!: ProgramState;
 
     @CreateDateColumn({ name: "created_date", type: "timestamp" })
     created_date!: Date;

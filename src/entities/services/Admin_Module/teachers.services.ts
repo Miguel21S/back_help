@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { badRequestError, notFoundError } from "../../../core/utils/errorStatusCodes";
-import { foundEntity, parserIsActive } from "../../reusableComponents/validatedFunctions";
+import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
+import { ensureUnique, foundEntity, parserIsActive } from "../../reusableComponents/validatedFunctions";
 import { Users } from "../../models/Users.model";
 import { Departments_academics } from "../../models/Departments_academics.model";
 import { Teachers } from "../../models/Teachers.model";
+import { Not } from "typeorm";
 
+
+///////////////////////   METHOD CREATE TEACHER
 const createTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { category, specialty, user_id, dept_academic_id } = req.body
@@ -16,6 +19,14 @@ const createTeacher = async (req: Request, res: Response, next: NextFunction) =>
 
         await foundEntity<Users>(Users, { id: id_user }, 'User not found')
         await foundEntity<Departments_academics>(Departments_academics, { id: dpto_id }, 'Department not found')
+
+        await ensureUnique(
+            Teachers,
+            {
+                user_id: id_user
+            },
+            "The user already exist on the teachers list"
+        )
 
         await Teachers.save({
             category,
@@ -29,11 +40,15 @@ const createTeacher = async (req: Request, res: Response, next: NextFunction) =>
             message: 'Teacher create successfully'
         })
 
-    } catch (error) {
+    } catch (error: any) {
+        if(error.code === "ER_DUP_ENTRY") {
+            return next(new conflictError("A teacher with the same id user, already exists."))
+        }
         next(error)
     }
 }
 
+///////////////////////   METHOD RETURNING LIST OF TEACHERS
 const getTeachers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const listTeachers = await Teachers.find({
@@ -66,6 +81,7 @@ const getTeachers = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+///////////////////////   METHOD UPDATE TEACHER BY ID
 const updateTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { category, specialty, isActive, user_id, dept_academic_id } = req.body
@@ -98,6 +114,15 @@ const updateTeacher = async (req: Request, res: Response, next: NextFunction) =>
             dptoAcd_id = acadmic_dpto?.id
         }
 
+        await ensureUnique(
+            Teachers,
+            {
+                user_id: us_id,
+                id: Not(teacher_id)
+            },
+            "The user already exist on the teachers list"
+        )
+
         await Teachers.update(
             { id: teacher_id },
             {
@@ -117,6 +142,7 @@ const updateTeacher = async (req: Request, res: Response, next: NextFunction) =>
     }
 }
 
+///////////////////////   METHOD DELETE TEACHER BY ID
 const deleteTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const teacher_id = Number(req.params.id)
@@ -139,7 +165,7 @@ const deleteTeacher = async (req: Request, res: Response, next: NextFunction) =>
 
         res.status(204).json({
             success: true,
-            message: "Delete teacher successfully"
+            message: "Teacher deleted successfully"
         })
     } catch (error) {
         next(error)
