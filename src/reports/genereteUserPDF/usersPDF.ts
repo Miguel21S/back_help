@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { createUsersPDF } from "./genereteUsersPDF"
 import { authorizationError, notFoundError } from "../../core/utils/errorStatusCodes"
-import { Users } from "../../entities/models/roles_users_permission/Users.model"
+import { Users } from "../../entities/models/users_models/Users.model"
 
 //////////////////       GENERETE PDF BY FILTER
 const generetePdfByFilterUsersInSystem = async (req: Request, res: Response, next: NextFunction) => {

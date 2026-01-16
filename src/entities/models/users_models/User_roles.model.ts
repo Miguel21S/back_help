@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Roles } from "./Roles.model";
-import { Users } from "./Users.model";
+import { Roles } from "../admin/Roles.model";
+import { Users } from "../users_models/Users.model";
 
 @Entity("user_roles")
 export class User_role extends BaseEntity {

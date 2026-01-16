@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Users } from "../roles_users_permission/Users.model";
+import { Users } from "../users_models/Users.model";
 import { Faculty } from "./Faculty.model";
 import { Departments_academics } from "./Departments_academics.model";
 

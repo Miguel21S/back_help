@@ -1,5 +1,6 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
+import { Students } from "../students_models/students_models";
 
 export enum ProgramState {
     ACTIVE = 'ACTIVE',
@@ -9,7 +10,7 @@ export enum ProgramState {
 }
 
 @Entity("programs")
-export class Program extends BaseEntity {
+export class Programs extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -48,4 +49,7 @@ export class Program extends BaseEntity {
     @ManyToOne(() => Faculty, (faculty) => faculty.programs, {onDelete: 'RESTRICT'})
     @JoinColumn({ name: "faculty_id" })
     faculty!: Faculty;
+
+    @OneToMany(()=> Students, (students)=> students.programs)
+    students!: Students[]
 }

@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Users } from "./Users.model";
-import { Permission } from "./Permission.model";
+import { Users } from "../users_models/Users.model";
+import { Permission } from "../admin/Permission.model";
 
 @Entity("user_permissions")
 export class User_permission extends BaseEntity {

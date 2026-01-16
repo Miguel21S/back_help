@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Institution } from "./Institutions.model";
 import { Departments_academics } from "./Departments_academics.model";
-import { Program } from "./Programs.model";
+import { Programs } from "./Programs.model";
 import { Employees } from "./Employees.models";
 
 @Entity('faculties')
@@ -41,8 +41,8 @@ export class Faculty extends BaseEntity{
     @OneToMany(()=> Departments_academics, (dept_ademic) => dept_ademic.faculty)
     departments_academics!: Departments_academics[];
 
-    @OneToMany(()=> Program, (program) => program.faculty)
-    programs!: Program[];
+    @OneToMany(()=> Programs, (programs) => programs.faculty)
+    programs!: Programs[];
 
     @OneToMany(()=> Employees, (employees)=> employees.faculty)
     employees!: Employees[]

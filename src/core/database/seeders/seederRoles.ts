@@ -1,8 +1,8 @@
-import { Permission } from "../../../entities/models/roles_users_permission/Permission.model";
-import { Role_permission } from "../../../entities/models/roles_users_permission/Role_permissions.model";
+import { Permission } from "../../../entities/models/admin/Permission.model";
+import { Role_permission } from "../../../entities/models/admin/Role_permissions.model";
 import { Roles } from "../../../entities/models/Roles.model";
-import { User_role } from "../../../entities/models/roles_users_permission/User_roles.model";
-import { Users } from "../../../entities/models/roles_users_permission/Users.model";
+import { User_role } from "../../../entities/models/admin/User_roles.model";
+import { Users } from "../../../entities/models/users_models/Users.model";
 
 export const seederRoles = async () => {
     const roles = [

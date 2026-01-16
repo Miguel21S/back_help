@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
-import { Users } from "../entities/models/roles_users_permission/Users.model";
+import { Users } from "../entities/models/users_models/Users.model";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../core/utils/errorStatusCodes";
-import { Roles } from "../entities/models/roles_users_permission/Roles.model";
-import { User_role } from "../entities/models/roles_users_permission/User_roles.model";
-import { Role_permission } from "../entities/models/roles_users_permission/Role_permissions.model";
+import { Roles } from "../entities/models/admin/Roles.model";
+import { User_role } from "../entities/models/admin/User_roles.model";
+import { Role_permission } from "../entities/models/admin/Role_permissions.model";
 import { AppDataSource } from "../core/database/db";
-import { User_permission } from "../entities/models/roles_users_permission/User_permission";
+import { User_permission } from "../entities/models/admin/User_permission";
 import { ensureUnique, validEmail, validPassword } from "../entities/reusableComponents/validatedFunctions";
 
 ///////////////////////////// METHOD REGISTER //////////////////////////

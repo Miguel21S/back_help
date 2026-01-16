@@ -1,6 +1,6 @@
 
 import { NextFunction, Request, Response } from "express";
-import { Users } from "../models/roles_users_permission/Users.model";
+import { Users } from "../models/users_models/Users.model";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../core/utils/errorStatusCodes";
 import { Not } from "typeorm";
 import { createUsersPDF } from "../../reports/genereteUserPDF/genereteUsersPDF";
@@ -8,10 +8,10 @@ import bcrypt from 'bcryptjs'
 import { ensureUnique, validEmail, validPassword } from "../reusableComponents/validatedFunctions";
 import { Buildings } from "../models/Buildings.model";
 import { AppDataSource } from "../../core/database/db";
-import { User_role } from "../models/roles_users_permission/User_roles.model";
-import { Roles } from "../models/roles_users_permission/Roles.model";
-import { Permission } from "../models/roles_users_permission/Permission.model";
-import { User_permission } from "../models/roles_users_permission/User_permission";
+import { User_role } from "../models/admin/User_roles.model";
+import { Roles } from "../models/admin/Roles.model";
+import { Permission } from "../models/admin/Permission.model";
+import { User_permission } from "../models/admin/User_permission";
 
 // import { Imagens } from "../models/Imagens.models";
 

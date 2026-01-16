@@ -1,9 +1,10 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Buildings } from "../Buildings.model";
-import { Teachers } from "../admin_models_institution/Teachers.model";
+import { Teachers } from "../admin_institutions_models/Teachers.model";
 import { User_role } from "./User_roles.model";
 import { User_permission } from "./User_permission";
-import { Employees } from "../admin_models_institution/Employees.models";
+import { Employees } from "../admin_institutions_models/Employees.models";
+import { Students } from "../students_models/students_models";
 
 
 @Entity("users")
@@ -81,4 +82,7 @@ export class Users extends BaseEntity {
 
     @OneToMany(()=> Employees, (employees)=> employees.user)
     employees!: Employees[]
+
+    @OneToMany(()=> Students, student => student.user)
+    students!: Students[]
 }

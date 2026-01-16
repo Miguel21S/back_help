@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { ensureUnique, foundEntity, parserIsActive } from "../../reusableComponents/validatedFunctions";
-import { Users } from "../../models/roles_users_permission/Users.model";
-import { Departments_academics } from "../../models/admin_models_institution/Departments_academics.model";
-import { Teachers } from "../../models/admin_models_institution/Teachers.model";
+import { Users } from "../../models/users_models/Users.model";
+import { Departments_academics } from "../../models/admin_institutions_models/Departments_academics.model";
+import { Teachers } from "../../models/admin_institutions_models/Teachers.model";
 import { Not } from "typeorm";
 
 

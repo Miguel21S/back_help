@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { Faculty } from "../../models/admin_models_institution/Faculty.model";
+import { Faculty } from "../../models/admin_institutions_models/Faculty.model";
 import { authorizationError, badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
-import { Users } from "../../models/roles_users_permission/Users.model";
-import { Institution } from "../../models/admin_models_institution/Institutions.model";
+import { Users } from "../../models/users_models/Users.model";
+import { Institution } from "../../models/admin_institutions_models/Institutions.model";
 import { Not } from "typeorm";
 import { ensureUnique, parserIsActive, validEmail } from "../../reusableComponents/validatedFunctions";
 

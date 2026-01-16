@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { badRequestError, conflictError, notFoundError } from "../../core/utils/errorStatusCodes";
 import { Buildings } from "../models/Buildings.model";
 import { Not } from "typeorm";
-import { Users } from "../models/roles_users_permission/Users.model";
+import { Users } from "../models/users_models/Users.model";
 import { AppDataSource } from "../../core/database/db";
 import { createBuildingPDF } from "../../reports/genereteBuildPDF/genereteBuildingsPDF";
 

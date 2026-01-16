@@ -1,8 +1,8 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Users } from "./Users.model";
+import { Users } from "../users_models/Users.model";
 import { Permission } from "./Permission.model";
 import { Role_permission } from "./Role_permissions.model";
-import { User_role } from "./User_roles.model";
+import { User_role } from "../users_models/User_roles.model";
 // import { permission } from "process";
 
 
