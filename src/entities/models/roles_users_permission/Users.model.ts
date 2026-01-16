@@ -3,6 +3,7 @@ import { Buildings } from "../Buildings.model";
 import { Teachers } from "../admin_models_institution/Teachers.model";
 import { User_role } from "./User_roles.model";
 import { User_permission } from "./User_permission";
+import { Employees } from "../admin_models_institution/Employees.models";
 
 
 @Entity("users")
@@ -77,4 +78,7 @@ export class Users extends BaseEntity {
 
     @OneToMany(() => User_permission, user_p => user_p.user)
     user_permissions!: User_permission[];
+
+    @OneToMany(()=> Employees, (employees)=> employees.user)
+    employees!: Employees[]
 }

@@ -54,7 +54,7 @@ export class Teachers1767965781165 implements MigrationInterface {
                               isNullable: false,
                           }, */
                         {
-                            name: 'dept_academic_id',
+                            name: 'dpto_academic_id',
                             type: 'int',
                             isNullable: false,
                         }
@@ -76,7 +76,7 @@ export class Teachers1767965781165 implements MigrationInterface {
                              onDelete: 'RESTRICT',
                          }, */
                         {
-                            columnNames: ['dept_academic_id'],
+                            columnNames: ['dpto_academic_id'],
                             referencedTableName: 'departments_academics',
                             referencedColumnNames: ['id'],
                             onDelete: 'RESTRICT',

@@ -27,6 +27,11 @@ export class Employees1766926301953 implements MigrationInterface {
                             default: true
                         },
                         {
+                            name: "deletedAt",
+                            type: "timestamp",
+                            isNullable: true
+                        },
+                        {
                             name: "created_date",
                             type: "timestamp",
                             default: "CURRENT_TIMESTAMP",
@@ -43,19 +48,15 @@ export class Employees1766926301953 implements MigrationInterface {
                             isNullable: false,
                         },
                         {
-                            name: 'dept_academic_id',
+                            name: 'dpto_academic_id',
                             type: 'int',
                             isNullable: false,
                         }
                     ],
                     uniques: [
                         {
-                            name: "UQ_employeed",
-                            columnNames: ["faculty_id", "department_id", "category", "user_id"]
-                        },
-                        {
-                            name: "UQ_employeed_user_id",
-                            columnNames: ["user_id"]
+                            name: "UQ_employee_unique_role",
+                            columnNames: ['user_id', 'faculty_id', 'dept_academic_id', 'category']
                         }
                     ],
                     foreignKeys: [
@@ -72,7 +73,7 @@ export class Employees1766926301953 implements MigrationInterface {
                             onDelete: 'RESTRICT',
                         },
                         {
-                            columnNames: ['dept_academic_id'],
+                            columnNames: ['dpto_academic_id'],
                             referencedTableName: 'departments_academics',
                             referencedColumnNames: ['id'],
                             onDelete: 'RESTRICT',

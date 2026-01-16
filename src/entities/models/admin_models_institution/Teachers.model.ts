@@ -26,14 +26,14 @@ export class Teachers extends BaseEntity {
     @CreateDateColumn({ name: "created_date", type: "timestamp" })
     created_date!: Date;
 
-    @Column({ name: 'dept_academic_id' })
-    dept_academic_id!: number;
+    @Column({ name: 'dpto_academic_id' })
+    dpto_academic_id!: number;
 
     @ManyToOne(() => Users, (users) => users.teachers, {onDelete: 'RESTRICT'})
     @JoinColumn({ name: 'user_id' })
     user!: Users;
 
-    @ManyToOne(() => Departments_academics, (dept_ademic) => dept_ademic.teachers, {onDelete: 'RESTRICT'})
-    @JoinColumn({ name: 'dept_academic_id' })
+    @ManyToOne(() => Departments_academics, (dpto_academic) => dpto_academic.teachers, {onDelete: 'RESTRICT'})
+    @JoinColumn({ name: 'dpto_academic_id' })
     departments_academics!: Departments_academics;
 }

@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, On
 import { Faculty } from "./Faculty.model";
 import { Institution } from "./Institutions.model";
 import { Teachers } from "./Teachers.model";
+import { Employees } from "./Employees.models";
 
 
 @Entity("departments_academics")
@@ -41,9 +42,9 @@ export class Departments_academics extends BaseEntity {
     @JoinColumn({name: 'institution_id'})
     institution!: Institution;
 
-    // @OneToMany(() => Employee, (employee) => employee.department)
-    // employees!: Employee[];
-
     @OneToMany(() => Teachers, (teachers) => teachers.departments_academics)
     teachers!: Teachers[];
+    
+    @OneToMany(() => Employees, (employees) => employees.departments_academics)
+    employees!: Employees[];
 }
