@@ -16,6 +16,18 @@ import { Departments_academics } from '../../entities/models/admin_institutions_
 import { Teachers } from '../../entities/models/admin_institutions_models/Teachers.model';
 import { Programs } from '../../entities/models/admin_institutions_models/Programs.model';
 import { Employees } from '../../entities/models/admin_institutions_models/Employees.models';
+import { Students } from '../../entities/models/students_models/students.models';
+import { Subjects } from '../../entities/models/academic_models/subjects.models';
+import { Courses } from '../../entities/models/academic_models/Courses.models';
+import { Classrooms } from '../../entities/models/academic_models/Classrooms.models';
+import { Laboratories } from '../../entities/models/academic_models/Laboratories.models';
+import { Groups } from '../../entities/models/academic_models/Groups.models';
+import { Groups_shedules } from '../../entities/models/academic_models/Groups_shedules.models';
+import { Subject_laboratories } from '../../entities/models/academic_models/Subject_laboratories.models';
+import { Teacher_groups } from '../../entities/models/academic_models/Teacher_groups.models';
+import { Student_subjects } from '../../entities/models/students_models/Student_subjects.models';
+import { Student_laboratories } from '../../entities/models/students_models/Student_laboratories.models';
+import { Student_groups } from '../../entities/models/students_models/Student_groups.models';
 
 
 import { Role1731800867772 } from './migrations/admin/1731800867772-role';
@@ -30,10 +42,19 @@ import { DepartmentsAcademics1767961580049 } from './migrations/admin_institutio
 import { Teachers1767965781165 } from './migrations/admin_institutions_migrations/1767965781165-teachers';
 import { Programs1766934920847 } from './migrations/admin_institutions_migrations/1766934920847-programs';
 import { Employees1766926301953 } from './migrations/admin_institutions_migrations/1766926301953-employees';
+import { Students1768495243875 } from './migrations/students_migrations/1768495243875-students';
+import { Subjects1768495829148 } from './migrations/academic_migrations/1768495829148-subjects';
+import { Courses1768497803067 } from './migrations/academic_migrations/1768497803067-courses';
+import { Laboratories1768497845536 } from './migrations/academic_migrations/1768497845536-laboratories';
+import { Groups1768517515202 } from './migrations/academic_migrations/1768517515202-groups';
+import { GroupsShedules1768497880040 } from './migrations/academic_migrations/1768497880040-groups_shedules';
+import { SubjectLaboratories1768516365079 } from './migrations/academic_migrations/1768516365079-subject_laboratories';
+import { TeacherGroups1768518012692 } from './migrations/academic_migrations/1768518012692-teacher_groups';
+import { StudentSubjects1768516032328 } from './migrations/students_migrations/1768516032328-student_subjects';
+import { StudentLaboratories1768516224496 } from './migrations/students_migrations/1768516224496-student_laboratories';
+import { StudentGroups1768517870958 } from './migrations/students_migrations/1768517870958-student_groups';
 
 import { Buildings1762618117246 } from './migrations/1762618117246-buildings';
-import { Students } from '../../entities/models/students_models/students_models';
-import { Students1768495243875 } from './migrations/students_migrations/1768495243875-students';
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -46,14 +67,16 @@ export const AppDataSource = new DataSource({
 
     entities: [Roles, Permission, Role_permission, User_role, Buildings, Users,
         User_permission, Institution, Faculty, Departments_academics, Teachers, Programs, Employees,
-        Students,
-
+        Students, Subjects, Courses, Classrooms, Laboratories, Groups, Groups_shedules, Subject_laboratories,
+        Teacher_groups, Student_subjects, Student_laboratories, Student_groups
     ],
 
     migrations: [Role1731800867772, Permission1737758326811, RolePermissions1767439621713, UserRoles1767057541372,
         UserPermissions1767434295157, Buildings1762618117246, Users1762634123551, Institutions1766925750381, Faculties1766925853555,
-        DepartmentsAcademics1767961580049, Teachers1767965781165, Programs1766934920847, Employees1766926301953, Students1768495243875
-        
+        DepartmentsAcademics1767961580049, Teachers1767965781165, Programs1766934920847, Employees1766926301953, Students1768495243875,
+        Subjects1768495829148, Courses1768497803067, Laboratories1768497845536, Groups1768517515202, GroupsShedules1768497880040,
+        SubjectLaboratories1768516365079, TeacherGroups1768518012692, StudentSubjects1768516032328, StudentLaboratories1768516224496,
+        StudentGroups1768517870958
     ],
 
     synchronize: false,

@@ -50,16 +50,16 @@ export class GroupsShedules1768497880040 implements MigrationInterface {
                     ],
                     foreignKeys: [
                         {
-                            columnNames: ['classroom_id'],
-                            referencedTableName: 'classrooms',
-                            referencedColumnNames: ['id'],
-                            onDelete: 'RESTRICT'
-                        },
-                        {
                             columnNames: ['group_id'],
                             referencedTableName: 'groups',
                             referencedColumnNames: ['id'],
                             onDelete: 'CASCADE'
+                        },
+                        {
+                            columnNames: ['classroom_id'],
+                            referencedTableName: 'classrooms',
+                            referencedColumnNames: ['id'],
+                            onDelete: 'RESTRICT'
                         },
                     ]
                 }

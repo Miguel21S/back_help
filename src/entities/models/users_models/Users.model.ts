@@ -4,7 +4,7 @@ import { Teachers } from "../admin_institutions_models/Teachers.model";
 import { User_role } from "./User_roles.model";
 import { User_permission } from "./User_permission";
 import { Employees } from "../admin_institutions_models/Employees.models";
-import { Students } from "../students_models/students_models";
+import { Students } from "../students_models/students.models";
 
 
 @Entity("users")

@@ -27,13 +27,13 @@ export class SubjectLaboratories1768516365079 implements MigrationInterface {
                     {
                         name: 'subject_id',
                         type: 'int',
-                        isPrimary: true
+                        isNullable: false
 
                     },
                     {
                         name: 'laboratory_id',
                         type: 'int',
-                        isPrimary: true
+                        isNullable: false
 
                     }
                 ],

@@ -23,19 +23,18 @@ export class StudentLaboratories1768516224496 implements MigrationInterface {
                         {
                             name: 'attended', ///  Asistencia del estudiante
                             type: 'boolean',
-                            default: false
+                            default: false,
+                            isNullable: true
                         },
                         {
                             name: 'student_id',
                             type: 'int',
-                            isPrimary: true
-
+                            isNullable: false
                         },
                         {
                             name: 'laboratory_id ',
                             type: 'int',
-                            isPrimary: true
-
+                            isNullable: false
                         }
                     ],
                     foreignKeys: [

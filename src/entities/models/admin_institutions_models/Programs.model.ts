@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Faculty } from "./Faculty.model";
-import { Students } from "../students_models/students_models";
+import { Students } from "../students_models/students.models";
 
 export enum ProgramState {
     ACTIVE = 'ACTIVE',

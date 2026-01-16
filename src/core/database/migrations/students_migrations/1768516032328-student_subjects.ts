@@ -17,12 +17,12 @@ export class StudentSubjects1768516032328 implements MigrationInterface {
                     {
                         name: 'student_id',
                         type: 'int',
-                        isPrimary: true
+                        isNullable: false
                     },
                     {
                         name: 'subject_id',
                         type: 'int',
-                        isPrimary: true
+                        isNullable: false
                     }
                 ],
                 foreignKeys: [

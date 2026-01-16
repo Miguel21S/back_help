@@ -23,17 +23,12 @@ export class Groups1768517515202 implements MigrationInterface {
                         {
                             name: 'year',
                             type: 'smallint',
-                            default: true
+                            isNullable: true
                         },
                         {
                             name: 'semester',
                             type: 'tinyint',
-                            default: true
-                        },
-                        {
-                            name: 'subject_id',
-                            type: 'int',
-                            default: true
+                            isNullable: true
                         },
                         {
                             name: 'isActive',
@@ -44,6 +39,11 @@ export class Groups1768517515202 implements MigrationInterface {
                             name: "deletedAt",
                             type: "timestamp",
                             isNullable: true
+                        },
+                        {
+                            name: 'subject_id',
+                            type: 'int',
+                            default: true
                         },
                     ],
                     uniques: [

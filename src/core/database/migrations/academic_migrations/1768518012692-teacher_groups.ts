@@ -17,13 +17,13 @@ export class TeacherGroups1768518012692 implements MigrationInterface {
                     {
                         name: 'teacher_id',
                         type: 'int',
-                        isPrimary: true
+                        isNullable: false
 
                     },
                     {
                         name: 'group_id',
                         type: 'int',
-                        isPrimary: true
+                        isNullable: false
 
                     }
                 ],

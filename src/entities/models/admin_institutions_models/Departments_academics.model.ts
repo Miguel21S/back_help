@@ -3,6 +3,7 @@ import { Faculty } from "./Faculty.model";
 import { Institution } from "./Institutions.model";
 import { Teachers } from "./Teachers.model";
 import { Employees } from "./Employees.models";
+import { Subjects } from "../academic_models/subjects.models";
 
 
 @Entity("departments_academics")
@@ -47,4 +48,7 @@ export class Departments_academics extends BaseEntity {
     
     @OneToMany(() => Employees, (employees) => employees.departments_academics)
     employees!: Employees[];
+
+    @OneToMany(() => Subjects, (subjects) => subjects.departments_academics)
+    subjects!: Subjects[];
 }
