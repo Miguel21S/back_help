@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes";
 import { ensureUnique, foundEntity } from "../../reusableComponents/validatedFunctions";
 import { Faculty } from "../../models/admin_institutions_models/Faculty.model";
-import { Program, ProgramState } from "../../models/admin_institutions_models/Programs.model";
+import { Programs, ProgramState } from "../../models/admin_institutions_models/Programs.model";
 import { Not } from "typeorm";
 
 ///////////////////////   METHOD CREATE PROGRAM
@@ -18,7 +18,7 @@ const createPrograms = async (req: Request, res: Response, next: NextFunction) =
         await foundEntity<Faculty>(Faculty, { id: facult_id }, "Facult not found")
 
         await ensureUnique(
-            Program,
+            Programs,
             {
                 name,
                 degree,
@@ -27,7 +27,7 @@ const createPrograms = async (req: Request, res: Response, next: NextFunction) =
             "The program already exist on faculty"
         )
 
-        await Program.save({
+        await Programs.save({
             name,
             degree,
             duration,
@@ -55,7 +55,7 @@ const createPrograms = async (req: Request, res: Response, next: NextFunction) =
 const getPrograms = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const listPrograms = await Program.find({
+        const listPrograms = await Programs.find({
             relations: ['faculty'],
             select: {
                 name: true,
@@ -94,7 +94,7 @@ const updateProgram = async (req: Request, res: Response, next: NextFunction) =>
 
         if (isNaN(prgram_id)) { throw new badRequestError("Invalid program id") }
 
-        const program = await foundEntity<Program>(Program, { id: prgram_id }, "Program id not found")
+        const program = await foundEntity<Programs>(Programs, { id: prgram_id }, "Program id not found")
         let facult_id = program?.faculty_id
 
         if (faculty_id !== undefined) {
@@ -107,7 +107,7 @@ const updateProgram = async (req: Request, res: Response, next: NextFunction) =>
         }
 
         await ensureUnique(
-            Program,
+            Programs,
             {
                 name: name ?? program?.name,
                 degree: degree ?? program?.degree,
@@ -132,7 +132,7 @@ const updateProgram = async (req: Request, res: Response, next: NextFunction) =>
             states = normalizedState
         }
 
-        await Program.update(
+        await Programs.update(
             { id: prgram_id },
             {
                 name: name ?? program?.name,
@@ -163,7 +163,7 @@ const deleteProgram = async (req: Request, res: Response, next: NextFunction) =>
 
         if (isNaN(prgram_id)) { throw new badRequestError("invalid program id") }
 
-        const program = await foundEntity<Program>(Program, { id: prgram_id }, "Program not found")
+        const program = await foundEntity<Programs>(Programs, { id: prgram_id }, "Program not found")
 
         if (program.state === ProgramState.GRADUATED) {
             throw new badRequestError("Graduated programs cannot be deleted")
@@ -173,7 +173,7 @@ const deleteProgram = async (req: Request, res: Response, next: NextFunction) =>
             throw new badRequestError("Program is already inactive")
         }
 
-        await Program.update(
+        await Programs.update(
             { id: prgram_id },
             { state: ProgramState.INACTIVE }
         )

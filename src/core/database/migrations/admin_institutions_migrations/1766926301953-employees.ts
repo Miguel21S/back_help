@@ -56,7 +56,7 @@ export class Employees1766926301953 implements MigrationInterface {
                     uniques: [
                         {
                             name: "UQ_employee_unique_role",
-                            columnNames: ['user_id', 'faculty_id', 'dept_academic_id', 'category']
+                            columnNames: ['user_id', 'faculty_id', 'dpto_academic_id', 'category']
                         }
                     ],
                     foreignKeys: [

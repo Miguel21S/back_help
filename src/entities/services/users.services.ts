@@ -8,10 +8,10 @@ import bcrypt from 'bcryptjs'
 import { ensureUnique, validEmail, validPassword } from "../reusableComponents/validatedFunctions";
 import { Buildings } from "../models/Buildings.model";
 import { AppDataSource } from "../../core/database/db";
-import { User_role } from "../models/admin/User_roles.model";
 import { Roles } from "../models/admin/Roles.model";
 import { Permission } from "../models/admin/Permission.model";
-import { User_permission } from "../models/admin/User_permission";
+import { User_role } from "../models/users_models/User_roles.model";
+import { User_permission } from "../models/users_models/User_permission";
 
 // import { Imagens } from "../models/Imagens.models";
 

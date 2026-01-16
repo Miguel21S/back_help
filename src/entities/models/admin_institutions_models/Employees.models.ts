@@ -15,6 +15,9 @@ export class Employees extends BaseEntity{
     @Column({name: 'isActive'})
     isActive!: boolean;
 
+    @Column({ type: "timestamp", nullable: true })
+    deletedAt?: Date | null;
+
     @Column({name: 'created_date', type: 'timestamp'})
     created_date!: Date;
 
