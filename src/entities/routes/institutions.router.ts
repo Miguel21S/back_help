@@ -1,6 +1,6 @@
 import { Router } from "express";
-import * as institution from '../services/admin_module_institution/institution.services';
-import * as faculty from '../services/admin_module_institution/faculties.services';
+import * as institution from '../services/admin_institution_services/institution.services';
+import * as faculty from '../services/admin_institution_services/faculties.services';
 import { auth } from "../../core/middleware/auth";
 import { checkAccess } from "../../core/middleware/checkAccess";
 
