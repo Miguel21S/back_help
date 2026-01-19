@@ -19,7 +19,7 @@ export const parserIsActive = (value: string): boolean => {
     const status = value.toLowerCase()
 
     if (status === 'active') return true
-    if (status === 'inactive') return false 
+    if (status === 'inactive') return false
     throw new badRequestError("isActive must be 'active' or 'inactive'");
 }
 // formatIsActive(u.isActive)
@@ -50,3 +50,26 @@ export async function foundEntity<T>(entity: { findOne: Function }, where: any, 
     if (!exist) { throw new notFoundError(errorMessage) }
     return exist;
 }
+
+// Validaciones de id
+export const parseId = (value: any, name: string): number => {
+    const id = Number(value);
+    if (isNaN(id)) { throw new badRequestError(`Invalid ${name} id`) };
+    return id;
+}
+
+/* export async function foundEntity<T extends ObjectLiteral>(
+    entity: EntityTarget<T>,
+    where: any,
+    errorMessage: string,
+    manager: EntityManager
+): Promise<T> {
+
+    const exist = await manager.findOne(entity, { where });
+
+    if (!exist) {
+        throw new notFoundError(errorMessage);
+    }
+
+    return exist;
+} */

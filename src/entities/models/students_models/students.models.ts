@@ -20,6 +20,9 @@ export class Students extends BaseEntity{
     @Column({name: 'isActive'})
     isActive!: boolean;
 
+    @Column({type: 'timestamp', nullable: true})
+    deletedAt!: Date | null;
+
     @Column({name: 'user_id'})
     user_id!: number;
 
