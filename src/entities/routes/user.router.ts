@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as user from "../services/admin_institution_services/users.services";
+import * as user from "../services/users.services";
 import { auth } from "../../core/middleware/auth";
 import { checkAccess, } from "../../core/middleware/checkAccess";
 

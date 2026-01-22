@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Users } from "../users_models/Users.model";
 import { Departments_academics } from "./Departments_academics.model";
-import { TeacherGroups } from "../academic_models/Teacher_groups.models";
+import { Teacher_groups } from "../academic_models/Teacher_groups.models";
 
 
 @Entity('teachers')
@@ -38,6 +38,6 @@ export class Teachers extends BaseEntity {
     @JoinColumn({ name: 'dpto_academic_id' })
     departments_academics!: Departments_academics;
 
-    @OneToMany(() => TeacherGroups, (teacher_group) => teacher_group.teachers)
-    teacher_groups!: TeacherGroups[];
+    @OneToMany(() => Teacher_groups, (teacher_group) => teacher_group.teachers)
+    teacher_groups!: Teacher_groups[];
 }

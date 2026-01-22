@@ -1,7 +1,7 @@
 import { Router } from "express";
-import * as dept from '../services/admin_institution_services/departmentsAcademics.services';
-import { auth } from "../../core/middleware/auth";
-import { checkAccess } from "../../core/middleware/checkAccess";
+import * as dept from '../../services/admin_institution_services/departmentsAcademics.services';
+import { auth } from "../../../core/middleware/auth";
+import { checkAccess } from "../../../core/middleware/checkAccess";
 
 const route = Router();
 

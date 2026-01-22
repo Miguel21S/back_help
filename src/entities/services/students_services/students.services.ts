@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express"
-import { badRequestError, conflictError } from "../../../core/utils/errorStatusCodes"
+import { badRequestError, conflictError, notFoundError } from "../../../core/utils/errorStatusCodes"
 import { ensureUnique, foundEntity, parseId, parserIsActive } from "../../reusableComponents/validatedFunctions";
 import { Users } from "../../models/users_models/Users.model";
 import { Programs } from "../../models/admin_institutions_models/Programs.model";
@@ -20,8 +20,8 @@ const createStudents = async (req: Request, res: Response, next: NextFunction) =
         await foundEntity<Users>(Users, { id: us_id }, 'User not found')
         await foundEntity<Programs>(Programs, { id: prog_id }, 'Program not found')
 
-        ensureUnique(
-            Users,
+        await ensureUnique(
+            Students,
             {
                 user_id: us_id,
             },
@@ -29,7 +29,7 @@ const createStudents = async (req: Request, res: Response, next: NextFunction) =
         )
 
         if (!validStates.includes(normalizedState)) {
-            throw new badRequestError("Invalid status  must be STATE', 'GRADUATED', or 'SUPENDED'")
+            throw new badRequestError("Invalid status  must be, 'ACTIVE', 'GRADUATED', or 'SUPENDED'")
         }
 
         await Students.save({
@@ -45,7 +45,7 @@ const createStudents = async (req: Request, res: Response, next: NextFunction) =
 
     } catch (error: any) {
         if (error.code === "ER_DUP_ENTRY") {
-            return next(new conflictError("The employee with the same user, faculty, dpto academic, category, already exists."))
+            return next(new conflictError("The student with the same user, already exists."))
         }
         next(error)
     }
@@ -117,7 +117,7 @@ const updateStudent = async (req: Request, res: Response, next: NextFunction) =>
             progId = prog_id
         }
 
-        ensureUnique(
+        await ensureUnique(
             Students,
             {
                 user_id: userId ?? student?.user_id,

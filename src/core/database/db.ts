@@ -41,18 +41,19 @@ import { Faculties1766925853555 } from './migrations/admin_institutions_migratio
 import { DepartmentsAcademics1767961580049 } from './migrations/admin_institutions_migrations/1767961580049-departments_academics';
 import { Teachers1767965781165 } from './migrations/admin_institutions_migrations/1767965781165-teachers';
 import { Programs1766934920847 } from './migrations/admin_institutions_migrations/1766934920847-programs';
-import { Employees1766926301953 } from './migrations/admin_institutions_migrations/1766926301953-employees';
+import { Employees1768854894250 } from './migrations/admin_institutions_migrations/1768854894250-employees';
 import { Students1768495243875 } from './migrations/students_migrations/1768495243875-students';
 import { Subjects1768495829148 } from './migrations/academic_migrations/1768495829148-subjects';
 import { Courses1768497803067 } from './migrations/academic_migrations/1768497803067-courses';
+import { Classrooms1768497823105 } from './migrations/academic_migrations/1768497823105-classrooms';
 import { Laboratories1768497845536 } from './migrations/academic_migrations/1768497845536-laboratories';
-import { Groups1768517515202 } from './migrations/academic_migrations/1768517515202-groups';
-import { GroupsShedules1768497880040 } from './migrations/academic_migrations/1768497880040-groups_shedules';
-import { SubjectLaboratories1768516365079 } from './migrations/academic_migrations/1768516365079-subject_laboratories';
-import { TeacherGroups1768518012692 } from './migrations/academic_migrations/1768518012692-teacher_groups';
+import { Groups1768855315692 } from './migrations/academic_migrations/1768855315692-groups';
+import { GroupsShedules1768855508711 } from './migrations/academic_migrations/1768855508711-groups_shedules';
+import { SubjectLaboratories1768855547979 } from './migrations/academic_migrations/1768855547979-subject_laboratories';
+import { TeacherGroups1768855568986 } from './migrations/academic_migrations/1768855568986-teacher_groups';
 import { StudentSubjects1768516032328 } from './migrations/students_migrations/1768516032328-student_subjects';
-import { StudentLaboratories1768516224496 } from './migrations/students_migrations/1768516224496-student_laboratories';
-import { StudentGroups1768517870958 } from './migrations/students_migrations/1768517870958-student_groups';
+import { StudentLaboratories1768855999253 } from './migrations/students_migrations/1768855999253-student_laboratories';
+import { StudentGroups1768856024644 } from './migrations/students_migrations/1768856024644-student_groups';
 
 import { Buildings1762618117246 } from './migrations/1762618117246-buildings';
 
@@ -73,11 +74,13 @@ export const AppDataSource = new DataSource({
 
     migrations: [Role1731800867772, Permission1737758326811, RolePermissions1767439621713, UserRoles1767057541372,
         UserPermissions1767434295157, Buildings1762618117246, Users1762634123551, Institutions1766925750381, Faculties1766925853555,
-        DepartmentsAcademics1767961580049, Teachers1767965781165, Programs1766934920847, Employees1766926301953, Students1768495243875,
-        Subjects1768495829148, Courses1768497803067, Laboratories1768497845536, Groups1768517515202, GroupsShedules1768497880040,
-        SubjectLaboratories1768516365079, TeacherGroups1768518012692, StudentSubjects1768516032328, StudentLaboratories1768516224496,
-        StudentGroups1768517870958
+        DepartmentsAcademics1767961580049, Teachers1767965781165, Programs1766934920847, Employees1768854894250, Students1768495243875,
+        Subjects1768495829148, Courses1768497803067, Classrooms1768497823105, Laboratories1768497845536, Groups1768855315692, GroupsShedules1768855508711,
+        SubjectLaboratories1768855547979, TeacherGroups1768855568986, StudentSubjects1768516032328, StudentLaboratories1768855999253,
+        StudentGroups1768856024644
     ],
+
+    
 
     synchronize: false,
     logging: false,

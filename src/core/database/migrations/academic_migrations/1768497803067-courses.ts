@@ -58,7 +58,7 @@ export class Courses1768497803067 implements MigrationInterface {
                     uniques: [
                         {
                             name: 'UQ_course_subject_year_semester',
-                            columnNames: ['subject_id', 'year', 'semester']
+                            columnNames: ['subject_id', 'semester']
                         }
                     ],
                     foreignKeys: [

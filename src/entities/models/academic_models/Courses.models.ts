@@ -2,30 +2,33 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColu
 import { Subjects } from "./subjects.models";
 
 @Entity('courses')
-export class Courses extends BaseEntity{
+export class Courses extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({name: 'name'})
+    @Column({ name: 'name' })
     name!: string;
 
-    @Column({name: 'academic_year'})
+    @Column({ name: 'academic_year' })
     academic_year!: string;
 
-    @Column({name: 'semester'})
+    @Column({ name: 'semester' })
     semester!: string;
 
-    @Column({name: 'state'})
+    @Column({ name: 'state' })
     state!: string;
 
-    @Column({name: 'isActive'})
+    @Column({ name: 'isActive' })
     isActive!: boolean;
 
-    @Column({name: 'subject_id'})
+    @Column({ type: 'timestamp', nullable: true })
+    deletedAt!: Date | null;
+
+    @Column({ name: 'subject_id' })
     subject_id!: number;
 
-    @ManyToOne(()=> Subjects, (subjects)=> subjects.courses, {onDelete: 'RESTRICT'})
-    @JoinColumn({name: 'subject_id'})
+    @ManyToOne(() => Subjects, (subjects) => subjects.courses, { onDelete: 'RESTRICT' })
+    @JoinColumn({ name: 'subject_id' })
     subjects!: Subjects
 }

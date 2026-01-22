@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { auth } from "../../core/middleware/auth";
-import { checkAccess } from "../../core/middleware/checkAccess";
-import * as teachers from '../services/admin_institution_services/teachers.services';
+import { auth } from "../../../core/middleware/auth";
+import { checkAccess } from "../../../core/middleware/checkAccess";
+import * as teachers from '../../services/admin_institution_services/teachers.services';
 
 const router = Router();
 

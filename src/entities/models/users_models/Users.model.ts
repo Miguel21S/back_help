@@ -38,22 +38,22 @@ export class Users extends BaseEntity {
     email!: string;
 
     @Column({ name: 'type_document' })
-    type_document!: string;
+    type_document?: string;
 
     @Column({ name: 'number_document' })
     number_document?: string;
 
     @Column({ name: 'avatar' })
-    avatar!: string;
+    avatar?: string;
 
     @Column({ name: 'isActive' })
-    isActive!: boolean;
+    isActive?: boolean;
 
     @Column({ type: "timestamp", nullable: true })
-    deletedAt!: Date | null;
+    deletedAt?: Date | null;
 
     @Column({ type: "timestamp", onUpdate: 'CURRENT_TIMESTAMP', nullable: true })
-    last_login!: Date;
+    last_login?: Date;
 
     @Column({ name: 'date_entry_apartment' })
     date_entry_apartment!: Date;

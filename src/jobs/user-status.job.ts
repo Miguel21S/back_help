@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 
-import { inactiveActivateUsers } from '../entities/services/admin_institution_services/users.services';
+import { inactiveActivateUsers } from '../entities/services/users.services';
 
 cron.schedule("*/1 * * * *", async () => {
     try {

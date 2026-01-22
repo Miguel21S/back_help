@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class GroupsShedules1768497880040 implements MigrationInterface {
+export class GroupsShedules1768855508711 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(

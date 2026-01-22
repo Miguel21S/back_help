@@ -3,8 +3,8 @@ import { Faculty } from "../admin_institutions_models/Faculty.model";
 import { Departments_academics } from "../admin_institutions_models/Departments_academics.model";
 import { Courses } from "./Courses.models";
 import { Groups } from "./Groups.models";
-import { SubjectLaboratories } from "./Subject_laboratories.models";
-import { StudentSubjects } from "../students_models/Student_subjects.models";
+import { Subject_laboratories } from "./Subject_laboratories.models";
+import { Student_subjects } from "../students_models/Student_subjects.models";
 
 @Entity('subjects')
 export class Subjects extends BaseEntity {
@@ -33,6 +33,9 @@ export class Subjects extends BaseEntity {
     @Column({ name: 'isActive' })
     isActive!: boolean;
 
+    @Column({ type: 'timestamp', nullable: true })
+    deletedAt!: Date|null;
+
     @Column({ name: 'faculty_id' })
     faculty_id!: number;
 
@@ -53,9 +56,9 @@ export class Subjects extends BaseEntity {
     @OneToMany(() => Groups, (groups) => groups.subjects)
     groups!: Groups[];
 
-    @OneToMany(() => SubjectLaboratories, (subject_labs) => subject_labs.subjects)
-    subject_laboratories!: Groups[];
+    @OneToMany(() => Subject_laboratories, (subject_labs) => subject_labs.subjects)
+    subject_laboratories!: Subject_laboratories[];
 
-    @OneToMany(() => StudentSubjects, (student_subj) => student_subj.subjects)
-    student_subjects!: StudentSubjects[];
+    @OneToMany(() => Student_subjects, (student_subj) => student_subj.subjects)
+    student_subjects!: Student_subjects[];
 }

@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class SubjectLaboratories1768516365079 implements MigrationInterface {
+export class TeacherGroups1768855568986 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         queryRunner.createTable(
             new Table({
-                name: 'subject_laboratories',
+                name: 'teacher_groups',
                 columns: [
-                    {
+                     {
                         name: 'id',
                         type: 'int',
                         isPrimary: true,
@@ -15,23 +15,13 @@ export class SubjectLaboratories1768516365079 implements MigrationInterface {
                         generationStrategy: 'increment'
                     },
                     {
-                        name: 'hours',
-                        type: 'tinyint',
-                        isNullable: false
-                    },
-                    {
-                        name: 'mandatory',   /// Si la práctica es obligatorio
-                        type: 'boolean',
-                        default: true
-                    },
-                    {
-                        name: 'subject_id',
+                        name: 'teacher_id',
                         type: 'int',
                         isNullable: false
 
                     },
                     {
-                        name: 'laboratory_id',
+                        name: 'group_id',
                         type: 'int',
                         isNullable: false
 
@@ -39,14 +29,14 @@ export class SubjectLaboratories1768516365079 implements MigrationInterface {
                 ],
                 foreignKeys: [
                     {
-                        columnNames: ['subject_id'],
-                        referencedTableName: 'subjects',
+                        columnNames: ['teacher_id'],
+                        referencedTableName: 'teachers',
                         referencedColumnNames: ['id'],
                         onDelete: 'CASCADE'
                     },
                     {
-                        columnNames: ['laboratory_id'],
-                        referencedTableName: 'laboratories',
+                        columnNames: ['group_id'],
+                        referencedTableName: 'groups',
                         referencedColumnNames: ['id'],
                         onDelete: 'CASCADE'
                     }
@@ -56,7 +46,7 @@ export class SubjectLaboratories1768516365079 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        queryRunner.dropTable('subject_laboratories')
+        queryRunner.dropTable('teacher_groups')
     }
 
 }

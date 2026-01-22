@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Groups } from "../academic_models/Groups.models";
 import { Students } from "./students.models";
 
+@Index(['student_id', 'group_id'], { unique: true })
 @Entity('student_groups')
 export class Student_groups extends BaseEntity {
 

@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class StudentLaboratories1768516224496 implements MigrationInterface {
+export class StudentLaboratories1768855999253 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         queryRunner.createTable(
@@ -32,7 +32,7 @@ export class StudentLaboratories1768516224496 implements MigrationInterface {
                             isNullable: false
                         },
                         {
-                            name: 'laboratory_id ',
+                            name: 'laboratory_id',
                             type: 'int',
                             isNullable: false
                         }

@@ -22,6 +22,9 @@ export class Classrooms extends BaseEntity{
     @Column({name: 'isActive'})
     isActive!: boolean;
 
+    @Column({type: 'timestamp', nullable: true})
+    deletedAt!: Date | null;
+
     @OneToMany(()=> Groups_shedules, (group_shed)=> group_shed.classrooms)
     groups_shedules!: Groups_shedules[];
 }
